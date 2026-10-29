@@ -42,20 +42,20 @@ Complete this one group record. Link actual issues, diffs, tests and reviews; av
 
 ## B Commit quality
 
-| Original example | Strong or Weak | Reason                                                                                                            |
-|---|----------------|-------------------------------------------------------------------------------------------------------------------|
-| changes | [weak]         | because it is to generic and does not explain what was changed                                                    |
-| final version | Weak           | in coding there is never a final version and if there is multiple its hard to find what its the final version of. |
-| Add patient search by ID | Strong         | Its specific non what the context is.                                                                             |
-| fix stuff | Weak           | does not explain what is to be fixed takes time and effort to find errors                                         |
-| Prevent cancellation of completed appointments | Strong         | It is specific in what needs to be fixed.                                                                         |
+| Original example | Strong or Weak | Reason                                                                                                                                                            |
+|---|-----|-------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| changes | Weak | because it is too generic and does not explain what was changed                                                                                                   |
+| final version | Weak| It says nothing about what was changed or what the final version is. When someone changes it is no longer a final version and can create multiple final versions. |
+| Add patient search by ID | Strong | It displays an action that was performed. It clearly links to a functional requirement (FR-02)                                                                    |
+| fix stuff | Weak | does not explain what is to be fixed and where. Also, takes time and effort to find errors                                                                        |
+| Prevent cancellation of completed appointments | Strong | It is specific in what it did fix. It names the exact rule the commit enforces                                                                                    |
 
 ## C Over scoped PR review
 
 A cancellation PR also renames unrelated patient fields, restructures unrelated code and adds a new dependency.
 
 - Scope concerns: The scope is doing tasks out side of your specialty if change the program to much it makes it complex for the customer and mistakes have to fixed which takes time and money.
-- Responsibility and architecture concerns: creates bugs and glitches that needs to be fixed harder to update and maintain. may change system architecture. makining the program incompatiability and causes conflicts and errors within the system.
+- Responsibility and architecture concerns: creates bugs and glitches that needs to be fixed harder to update and ma`intain. may change system architecture. makining the program incompatiability and causes conflicts and errors within the system.
 - Testing and review concerns: testing can work without errors but it may not run as expected which can cause even more concerns running a program in unstable environment.
 - Changes to remove or separate, with reasons: instead having one pull request, there should be four seperate pull requests patient field, code restructuring and new dependancy and cancellation PR. there needs to be four pull requests to let the team know everything you done and to keep every task independant.
 
@@ -65,17 +65,17 @@ GitHub Copilot says: "Looks good; tests pass."
 
 - Missing evidence: it does not provide what test cases it did and how it came to that conclusion it is based on generic information.
 - Follow-up review question 1: what was your assessment criteria based on.
-- Follow-up review question 2: there is an error in the coding when ran after your assessment you anaylse and fix the problem
+- Follow-up review question 2: “What does the code do if the ID is null or invalid?”
 - Follow-up review question 3: what was the test cases considered in my code
 - Follow-up review question 4: what assumption was made in testing my code 
-- Follow-up review question 5: if you was building this code what would you update and change or is there i should consider.
+- Follow-up review question 5: has there been any changes that is not documented.
 - Additional questions if useful: [response]
 
 ## E Team workflow agreement
 
 | Practice   | Team agreement                                                                                                                                                                                                                                                             |
 |------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Branch naming | feature/ prefix plus a short lowercase hyphenated description; one branch per issue. Examples: feature/patient-lookup, feature/practitioner-lookup, feature/cancel-appointment                                                                                             |
+| Branch naming `| feature/ prefix plus a short lowercase hyphenated description; one branch per issue. Examples: feature/patient-lookup, feature/practitioner-lookup, feature/cancel-appointment                                                                                             |
 | Commit message convention| Imperative verb first (Add, Reject, Test); describe the behaviour that changed, not the file; summary about 50 characters. Examples: "Add patient search by ID", "Reject cancellation of completed appointments"                                                           |
 | PR size | One issue per PR; no unrelated renames, refactoring, formatting changes or new dependencies, which get their own issue and PR                                                                                                                                              |
 | Another-member review requirement | A different group member reviews the actual diff and approves or requests changes before merge; self-review and Copilot do not count as approval                                                                                                                           |
