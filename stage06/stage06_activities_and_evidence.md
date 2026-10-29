@@ -3,23 +3,21 @@
 Complete this one group record. Link actual issues, diffs, tests and reviews; avoid copying entire histories. Blank fields are intentional. Duplicate rows as needed. Use synthetic data only. Every member records their own meaningful contribution. Do not invent results, reviews or Copilot use.
 
 - Group/tutorial: Tuesday 1:30
-- Members, GitHub usernames and cohorts: Stanley Campbell, Shaban Mohseni,Nhat Minh Le,Sabin Lamichhane
-- Repository URL:https://github.com/Sabin77/st1-assignment-3.git
+- Members, GitHub usernames and cohorts: Stanley Campbell (https://github.com/s-campbell-dev , UG), Shaban Mohseni,Nhat Minh Le (https://github.com/minhleee5 , UG),Sabin Lamichhane  (https://github.com/Sabin77 ,PG)
+- Repository URL: https://github.com/Sabin77/st1-assignment-3.git
 - Starting SHA: 22820d3125215dce5d33d1eaef2b2b6959ae431e (baseline: python -m pytest from project/, 8 passed, Python 3.13.14, pytest 8.3.5)
 ## A Requirement to issue activities
 
 ### FR-02 Patient Search
 
-- Title: PatientService.find_patient
-- Context:Find - Context: PatientService.find_patient currently raises NotImplementedError, so the app cannot look up a registered patient. Later workflows, such as the Stage 9 menu's find option, need to retrieve the stored patient by ID.
-- Requirement:Patient Search: Find a patient by patient ID.
-- Acceptance criteria: A registered patient ID returns the same stored Patient object, not a new one; an unknown valid ID raises LookupError; a blank or non-text ID raises ValueError; an ID with surrounding spaces finds the patient; a different letter case (p1 vs P1) is treated as not found.- 
+- Title: Find a patient using patient ID
+- Context: PatientService.find_patient currently raises NotImplementedError, so the app cannot look up a registered patient. Later workflows, such as the Stage 9 menu's find option, need to retrieve the stored patient by ID.
+- Requirement: FR-02 Patient Search: Find a patient by patient ID.
+- Acceptance criteria: A registered patient ID returns the same stored Patient object, not a new one; an unknown valid ID raises LookupError; a blank or non-text ID raises ValueError; an ID with surrounding spaces finds the patient; a different letter case (p1 vs P1) is treated as not found.
 - Scope: Complete PatientService.find_patient in services.py and add its tests in tests/test_services.py only. Out of scope: changes to domain.py or data_store.py, practitioner lookup, cancellation and Stage 9 work.
-- Definition of Done: All acceptance criteria have passing tests; the full suite passes from project/ with python -m pytest; the PR is reviewed and approved by another member; the Copilot comparison is recorded; the PR is merged to main, everyone has pulled and rerun the tests, and the issue is closed.- 
+- Definition of Done: All acceptance criteria have passing tests; the full suite passes from project/ with python -m pytest; the PR is reviewed and approved by another member; the Copilot comparison is recorded; the PR is merged to main, everyone has pulled and rerun the tests, and the issue is closed.
 - Owner: Stanley Campbell
-- Actual issue link: - Actual issue link: https://github.com/Sabin77/st1-assignment-3/issues/2
-
-### FR-03 Practioner Search
+- Actual issue link: https://github.com/Sabin77/st1-assignment-3/issues/2
 
 ### FR-03 supporting: Practitioner lookup
 
@@ -30,7 +28,7 @@ Complete this one group record. Link actual issues, diffs, tests and reviews; av
 - Scope: Complete PractitionerService.find_practitioner in services.py and add its tests in tests/test_services.py only. Out of scope: changes to domain.py or data_store.py, patient lookup, cancellation and Stage 9 work.
 - Definition of Done: All acceptance criteria have passing tests; the full suite passes from project/ with python -m pytest; the PR is reviewed and approved by another member; the Copilot comparison is recorded; the PR is merged to main, everyone has pulled and rerun the tests, and the issue is closed.
 - Owner: Stanley Campbell
-- Actual issue link:    - Actual issue link: https://github.com/Sabin77/st1-assignment-3/issues/3
+- Actual issue link: https://github.com/Sabin77/st1-assignment-3/issues/3
 
 ### FR-06 Appointment Cancellation with FR-07 retained history
  - Title: Cancel a scheduled appointment and keep its record
