@@ -162,46 +162,34 @@ Why is a high commit count not necessarily evidence of strong contribution?
 ## L Stage 6 formative questions
 
 1. What is version control?
-Version control is a system that moniotors changes over time to recover data over time and allows teams to callaboratew on project and recover and fix mistakes.
+Version control is a system that allows teams to collaborate on projects and recover and correct errors by monitoring changes over time to retrieve data.
 
-In software development it is used to source code it can track digital files including conmfigures files. there are core concepts to control firstly,the repository which is alsso known as repo this allows the data to track history of projects and folders,the revision is a snaphot of files at a specific pointwhich includea a unique ID and a timestamp as well as author and a message describing what changes, the branch creates a seperate and isolated copy of the project so the author can focus on fixing the issue at hand rather than interrupting the who program, merging this allows to combine change from one brach back to the main branch
 2. Why is a feature branch useful?
-
-A feature branch isolates the development of a project fom the main code. This allows to write test and refine code without effecting other team members code.
+A feature branch isolates the development of a project from the main code. This allows you to write tests and refine code without affecting other team members' code.
 
 3. What makes a commit a good engineering commit?
-
-A good engineer commit is clear and logical. It allows teammates to understand why a change was made and trace bugs
+A good engineering commit is clear and logical. It allows teammates to understand why a change was made and to trace bugs.
 
 4. What is a pull request?
-
-A pull request is a proposal to merge code changes from one branch to another.
-
-A pull request is the ability to pull a program from git to make changes.
+A pull request is a request to merge code from one branch to another. It allows team members to review the code and provide feedback before it is merged into the main branch. It also allows for discussion and collaboration on the code changes.
 
 5. What is the purpose of code review?
-
-The puropse of a code review is to ensure software quality,maintain code accuracy, and share expertise across the team before code into the main reposository
+The purpose of a code review is to ensure software quality, maintain code accuracy and share expertise across the team before code is merged into the main repository. Reviewers read the changes and comment on them.
 
 6. What does a Git diff show?
-
-It allows to compare changes in git repositrory and show modifications that has been made.
+Git diff allows you to compare changes in a Git repository and shows the modifications that have been made.
 
 7. What is a Definition of Done?
-
-Is a checklist agreed within the team which includes technicalities,functionality and the quality of the code and meeting the requirements of teh project.
+The definition of done is when the team agrees on a checklist that includes technicalities, functionality, code quality, and adherence to project requirements.
 
 8. What is the appropriate role of GitHub Copilot in pull-request review?
-
-Github is automated personal assistant to the person. it's role is to handle to analyse the code give feedback posibble errors and improvements, so the engineer can focus on aritechure and business logic.
+Copilot assists in reviewing code by providing suggestions, recommendations and identifying possible issues. However, the final decision belongs to the reviewer, to ensure code quality and keep the integrity of the project. Copilot only supports the reviewer, and its suggestions must be checked; the human reviewer should write their own observations first, before asking Copilot for a review.
 
 9. Why should individual contribution not be judged only by commit count?
-
-[response]
+The number of commits should not be the measure of someone's contribution to a project, because it does not reflect the quality or impact of the work they did. Other factors, such as collaboration, problem solving and mentoring, are also important. Overall, a person's work should be evaluated on quality, not quantity.
 
 10. What is the Stage 6 engineering rule?
-
-[response]
+The rule is a cycle: update main, create a focused issue and branch, write the code and tests, then push the changes and open a pull request. A team member reviews the changes first, and then Copilot reviews them; after approval the PR is merged, and everyone updates main and verifies the integrated tests.
 
 ## M Completion and handover
 
