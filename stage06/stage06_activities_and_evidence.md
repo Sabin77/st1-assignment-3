@@ -98,24 +98,25 @@ Create at least two focused issues. Add a linked practitioner-lookup issue or an
 
 Repeat this block per PR. Record actual events, not planned approvals.
 
-- PR link and title: [response]
-- Linked issue and requirement: [response]
-- Feature branch: [response]
-- Changed behaviour: [response]
-- Meaningful commits: [links]
-- Test command, directory and observed result: [response]
-- Another-member reviewer: [response]
+### PR #5: Patient lookup (issue #2)
+
+- PR link and title: https://github.com/Sabin77/st1-assignment-3/pull/5 "Add patient lookup by ID (closes #2)"
+- Linked issue and requirement: https://github.com/Sabin77/st1-assignment-3/issues/2 (FR-02 Patient Search: Find a patient by patient ID)
+- Feature branch: feature/patient-lookup
+- Changed behaviour: PatientService.find_patient returns the stored Patient for a registered ID and raises LookupError for an unknown ID; blank or non-text IDs raise ValueError through the store's existing validation.
+- Meaningful commits: https://github.com/Sabin77/st1-assignment-3/commit/fe6fa292aa4e2e7848b13287aae8365bc80fde9c (Add patient lookup by ID with LookupError for unknown IDs)
+- Test command, directory and observed result: python -m pytest from project/ on fe6fa29: 13 passed (8 starter, 5 new)
+- Another-member reviewer: Requested Sabin77 and minhleee5 on 29 October 2026; review pending
 - Human observations recorded before Copilot: [link and time]
 - Requirement, responsibilities, test assertions and unrelated-scope checks: [response]
 - Key feedback: [response]
 - Author response/change and verification: [response]
 - Reviewer recheck and approval: [link]
 - Merge outcome and SHA: [response]
-- Significant Copilot assistance: [summary or none]
+- Significant Copilot assistance: None in implementation or tests; required Copilot review comparison pending
 - Linked issue closure: [response]
 - Each member updated main: [member and confirmation]
 - Integrated verification after merge: [command, directory, result and code SHA]
-
 ## H Copilot collaboration record
 
 Record meaningful required use, not every trivial completion. Repeat per significant interaction.
