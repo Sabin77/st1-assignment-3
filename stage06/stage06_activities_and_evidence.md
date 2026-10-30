@@ -3,7 +3,7 @@
 Complete this one group record. Link actual issues, diffs, tests and reviews; avoid copying entire histories. Blank fields are intentional. Duplicate rows as needed. Use synthetic data only. Every member records their own meaningful contribution. Do not invent results, reviews or Copilot use.
 
 - Group/tutorial: Tuesday 1:30
-- Members, GitHub usernames and cohorts: Stanley Campbell (https://github.com/s-campbell-dev , UG), Shaban Mohseni,Nhat Minh Le (https://github.com/minhleee5 , UG),Sabin Lamichhane  (https://github.com/Sabin77 ,PG)
+- Members, GitHub usernames and cohorts: Stanley Campbell (https://github.com/s-campbell-dev , UG), Shaban Mohseni(AceofSpade-Py, UG) ,Nhat Minh Le (https://github.com/minhleee5 , UG),Sabin Lamichhane  (https://github.com/Sabin77 ,PG)
 - Repository URL: https://github.com/Sabin77/st1-assignment-3.git
 - Starting SHA: 22820d3125215dce5d33d1eaef2b2b6959ae431e (baseline: python -m pytest from project/, 8 passed, Python 3.13.14, pytest 8.3.5)
 ## A Requirement to issue activities
@@ -99,6 +99,8 @@ Repeat this block per PR. Record actual events, not ## H Copilot collaboration r
 
 ### PR #5: Patient lookup (issue #2)
 
+- ### PR #5: Patient lookup (issue #2)
+
 - PR link and title: https://github.com/Sabin77/st1-assignment-3/pull/5 "Add patient lookup by ID (closes #2)"
 - Linked issue and requirement: https://github.com/Sabin77/st1-assignment-3/issues/2 (FR-02 Patient Search: Find a patient by patient ID)
 - Feature branch: feature/patient-lookup
@@ -110,12 +112,12 @@ Repeat this block per PR. Record actual events, not ## H Copilot collaboration r
 - Requirement, responsibilities, test assertions and unrelated-scope checks: Sabin confirmed the method uses the shared store, returns the same registered object, raises LookupError for unknown IDs and relies on the store's validation; he ran the five new tests individually and the full suite (13 passed, Python 3.13.3, pytest 8.3.5) and found no issues.
 - Key feedback: Human review found no issues. Copilot (Optional): test_services.py had no final newline. Author self-check: the find_patient docstring still described the unfinished starter.
 - Author response/change and verification: Commit 792d44d updated the docstring and added the final newline; no behaviour change; python -m pytest from project/: 13 passed. Response comment: [link to your comment]
-- Reviewer recheck and approval: [link]
-- Merge outcome and SHA: [response]
+- Reviewer recheck and approval: https://github.com/Sabin77/st1-assignment-3/pull/5#pullrequestreview-5711433014; Sabin77 approved after rechecking commit 792d44d
+- Merge outcome and SHA: Merged into main by merge commit d0bbc25ab07a99400a10d6646df827a672167e73
 - Significant Copilot assistance: Part H review comparison only (see section H); no Copilot use in implementation or tests
-- Linked issue closure: [response]
-- Each member updated main: [member and confirmation]
-- Integrated verification after merge: [command, directory, result and code SHA]
+- Linked issue closure: Issue #2 closed automatically when PR #5 was merged
+- Each member updated main: Stanley Campbell: git pull --ff-only to d0bbc25, 13 passed; [other members: name, SHA and result when they confirm]
+- Integrated verification after merge: python -m pytest from project/ on d0bbc25: 13 passed
 
 Record meaningful required use, not every trivial completion. Repeat per significant interaction.
 
