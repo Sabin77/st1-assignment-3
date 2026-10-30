@@ -119,6 +119,27 @@ Repeat this block per PR. Record actual events, not ## H Copilot collaboration r
 - Each member updated main: Stanley Campbell: git pull --ff-only to d0bbc25, 13 passed; [other members: name, SHA and result when they confirm]
 - Integrated verification after merge: python -m pytest from project/ on d0bbc25: 13 passed
 
+
+### PR #6: Practitioner lookup (issue #3)
+
+- PR link and title: https://github.com/Sabin77/st1-assignment-3/pull/6 "Add practitioner lookup by ID (closes #3)"
+- Linked issue and requirement: https://github.com/Sabin77/st1-assignment-3/issues/3 (FR-03 Practitioner Registration; practitioner lookup is a supporting operation)
+- Feature branch: feature/practitioner-lookup
+- Changed behaviour: PractitionerService.find_practitioner returns the stored Practitioner for a registered ID and raises LookupError for an unknown ID; blank or non-text IDs raise ValueError through the store's existing validation; docstring describes the current behaviour.
+- Meaningful commits: https://github.com/Sabin77/st1-assignment-3/commit/19e782e0caa0804d399caf53b852fa3d0843afe6 (Add practitioner lookup by ID with LookupError for unknown IDs); https://github.com/Sabin77/st1-assignment-3/commit/88ccd13c427c1b338a7047f36578629e9189e36c (Restore blank lines between top-level definitions, found in the author's own diff check)
+- Test command, directory and observed result: python -m pytest from project/ on 88ccd13: 18 passed (8 starter, 5 patient, 5 practitioner)
+- Another-member reviewer: Requested Sabin77, minhleee5 and AceOfSpade-Py on 30 October 2026; review pending
+- Human observations recorded before Copilot: [link and time]
+- Requirement, responsibilities, test assertions and unrelated-scope checks: [response]
+- Key feedback: [response]
+- Author response/change and verification: [response]
+- Reviewer recheck and approval: [link]
+- Merge outcome and SHA: [response]
+- Significant Copilot assistance: None in implementation or tests; required Copilot review comparison pending
+- Linked issue closure: [response]
+- Each member updated main: [member and confirmation]
+- Integrated verification after merge: [command, directory, result and code SHA]
+
 Record meaningful required use, not every trivial completion. Repeat per significant interaction.
 
 ### PR #5 Copilot review (patient lookup)
