@@ -11,11 +11,12 @@ Complete this one group record. Link actual issues, diffs, tests and reviews; av
 ### FR-02 Patient Search
 
 - Title: Find a patient using patient ID
-- Context: PatientService.find_patient currently raises NotImplementedError, so the app cannot look up a registered patient. Later workflows, such as the Stage 9 menu's find option, need to retrieve the stored patient by ID.
+- Context: Right now, find_practitioner just comes up with an error message (NotImplementedError), so the app can't look up a registered practitioner. Later, the Stage 9 practitioner listing will need it to find a practitioner by their ID.
 - Requirement: FR-02 Patient Search: Find a patient by patient ID.
-- Acceptance criteria: A registered patient ID returns the same stored Patient object, not a new one; an unknown valid ID raises LookupError; a blank or non-text ID raises ValueError; an ID with surrounding spaces finds the patient; a different letter case (p1 vs P1) is treated as not found.
-- Scope: Complete PatientService.find_patient in services.py and add its tests in tests/test_services.py only. Out of scope: changes to domain.py or data_store.py, practitioner lookup, cancellation and Stage 9 work.
-- Definition of Done: All acceptance criteria have passing tests; the full suite passes from project/ with python -m pytest; the PR is reviewed and approved by another member; the Copilot comparison is recorded; the PR is merged to main, everyone has pulled and rerun the tests, and the issue is closed.
+- - Context: Right now, find_practitioner just comes up with an error message (NotImplementedError), so the app can't look up a registered practitioner. Later, the Stage 9 practitioner listing will need it to find a practitioner by their ID.
+- Acceptance criteria: A registered practitioner ID returns the same stored Practitioner object, not a new one; an ID with surrounding spaces locates the practitioner; a different letter case (dr1 vs. DR1) is handled as not found; an unknown valid ID raises LookupError; a blank or non-text ID raises ValueError.
+- Scope: Finish PractitionerService.find_practitioner in services.py and add its tests to tests/test_services.py only. Changes to domain.py or data_store.py, patient lookup, cancellation and Stage 9 work are all outside the scope.
+- Definition of Done: The PR is reviewed and approved by another member; the Copilot comparison is documented; all acceptance criteria have passing tests; the entire suite passes from project/ with python -m pytest; the PR is merged to main, everyone has pulled and rerun the tests, and the issue is closed.
 - Owner: Stanley Campbell
 - Actual issue link: https://github.com/Sabin77/st1-assignment-3/issues/2
 
@@ -25,20 +26,20 @@ Complete this one group record. Link actual issues, diffs, tests and reviews; av
 - Context: PractitionerService.find_practitioner currently raises NotImplementedError, so the app cannot look up a registered practitioner. Booking and the Stage 9 practitioner listing need to retrieve the stored practitioner by ID.
 - Requirement: FR-03 Practitioner Registration: Register a practitioner with unique ID, name and specialty. Practitioner lookup is a supporting operation.
 - Acceptance criteria: A registered practitioner ID returns the same stored Practitioner object, not a new one; an unknown valid ID raises LookupError; a blank or non-text ID raises ValueError; an ID with surrounding spaces finds the practitioner; a different letter case (dr1 vs DR1) is treated as not found.
-- Scope: Complete PractitionerService.find_practitioner in services.py and add its tests in tests/test_services.py only. Out of scope: changes to domain.py or data_store.py, patient lookup, cancellation and Stage 9 work.
-- Definition of Done: All acceptance criteria have passing tests; the full suite passes from project/ with python -m pytest; the PR is reviewed and approved by another member; the Copilot comparison is recorded; the PR is merged to main, everyone has pulled and rerun the tests, and the issue is closed.
+- Scope: Finish AppointmentService.cancel_appointment in services.py using the cancel() method, and test it in tests/test_services.py. Out of scope: changes to domain.py or data_store.py, deleting appointments, a workflow to complete appointments, patient or practitioner lookup and Stage 9 work.
+- Definition of Done: The PR is reviewed and approved by another member; the Copilot comparison is documented; all acceptance criteria have passing tests; the entire suite passes from project/ with python -m pytest; the PR is merged to main, everyone has pulled and rerun the tests, and the issue is closed.
 - Owner: Stanley Campbell
 - Actual issue link: https://github.com/Sabin77/st1-assignment-3/issues/3
 
 ### FR-06 Appointment Cancellation with FR-07 retained history
- - Title: Cancel a scheduled appointment and keep its record
- - Context: AppointmentService.cancel_appointment currently raises NotImplementedError, so a booked appointment cannot be cancelled. The Appointment class already guards the status change; the service needs to coordinate it while keeping the appointment in session history.
- - Requirement: FR-06 Appointment Cancellation: Cancel only a SCHEDULED appointment. FR-07 Retained history: Retain the same appointment with CANCELLED status in current-session history.
- - Acceptance criteria: Cancelling a SCHEDULED appointment changes its status to CANCELLED and returns the same stored object; after cancelling, the appointment can still be found by ID and still appears in the stored appointment list; cancelling an already CANCELLED appointment raises ValueError and the status stays CANCELLED; cancelling a COMPLETED appointment raises ValueError and the status stays COMPLETED; an unknown valid ID raises LookupError; a blank or non-text ID raises ValueError.
- - Scope: Complete AppointmentService.cancel_appointment in services.py using the existing Appointment.cancel() method, and add its tests in tests/test_services.py only. Out of scope: changes to domain.py or data_store.py, deleting appointments, a workflow to complete appointments, patient or practitioner lookup and Stage 9 work.
- - Definition of Done: All acceptance criteria have passing tests; the full suite passes from project/ with python -m pytest; the PR is reviewed and approved by another member; the Copilot comparison is recorded; the PR is merged to main, everyone has pulled and rerun the tests, and the issue is closed.
- - Owner: Stanley Campbell
- - Actual issue link:https://github.com/Sabin77/st1-assignment-3/issues/4
+- Title: Cancel a scheduled appointment and keep its record
+- Context:cancel_appointment just comes up with an error message (NotImplementedError), so a booked appointment can't be cancelled. The Appointment class already has a cancel() method that only allows a SCHEDULED appointment to be cancelled, so the service needs to use it while keeping the appointment in current-session history.
+- Requirement: FR-06 Appointment Cancellation: Cancel only a SCHEDULED appointment. FR-07 Retained history: Retain the same appointment with CANCELLED status in current-session history.
+- Acceptance criteria: When a scheduled appointment is cancelled, it becomes cancelled and the same stored object is returned. It can still be found by its ID and still appears in the list. Cancelling again raises a ValueError and it stays cancelled. Trying to cancel a completed appointment raises a ValueError and it stays completed. LookupError occurs for an unknown ID, while ValueError is raised for a blank or non-text ID.
+- Scope: Complete AppointmentService.cancel_appointment in services.py using the existing Appointment.cancel() method, and add its tests in tests/test_services.py only. Out of scope: changes to domain.py or data_store.py, deleting appointments, a workflow to complete appointments, patient or practitioner lookup and Stage 9 work.
+- Definition of Done: All acceptance criteria have passing tests; the full suite passes from project/ with python -m pytest; the PR is reviewed and approved by another member; the Copilot comparison is recorded; the PR is merged to main, everyone has pulled and rerun the tests, and the issue is closed.
+- Owner: Stanley Campbell 
+- Actual issue link:https://github.com/Sabin77/st1-assignment-3/issues/4
 
 ## B Commit quality
 
