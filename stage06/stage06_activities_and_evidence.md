@@ -53,11 +53,10 @@ Complete this one group record. Link actual issues, diffs, tests and reviews; av
 ## C Over scoped PR review
 
 A cancellation PR also renames unrelated patient fields, restructures unrelated code and adds a new dependency.
-
-- Scope concerns: The scope is doing tasks out side of your specialty if change the program to much it makes it complex for the customer and mistakes have to fixed which takes time and money.
-- Responsibility and architecture concerns: creates bugs and glitches that needs to be fixed harder to update and ma`intain. may change system architecture. makining the program incompatiability and causes conflicts and errors within the system.
-- Testing and review concerns: testing can work without errors but it may not run as expected which can cause even more concerns running a program in unstable environment.
-- Changes to remove or separate, with reasons: instead having one pull request, there should be four seperate pull requests patient field, code restructuring and new dependancy and cancellation PR. there needs to be four pull requests to let the team know everything you done and to keep every task independant.
+- Scope concerns: The goal of this PR is to cancel an appointment, but it also introduces a new dependency, re-organises other code and renames patient information. These extras have no linked issues and are not related to the acceptance criteria, so the reviewer cannot check them against anything.
+- Responsibility and architecture concerns: Renaming unrelated fields in the patient might break other code and tests that still use the old names. Unrelated code can be reorganised to move rules to the wrong layer, e.g. outside of the domain classes. The new dependency causes setup problems for every team member, since SmartCare only uses the standard library.
+- Testing and review concerns: One big diff with many mixed changes makes it easy for the reviewer to miss problems. A passing test suite does not prove the safety of the extra changes, nor does it show which tests cover which changes. Because of the new dependency, each member has to install and verify it in their own configuration.
+- Changes to remove or separate, with reasons: This PR should only retain the cancellation change. The renaming and the restructuring should each have their own issue first and then their own PR, so they can be judged on their own merits. The team should first determine whether the new dependency is actually necessary.
 
 ## D Challenge a weak Copilot review
 
