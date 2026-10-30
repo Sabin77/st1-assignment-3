@@ -77,6 +77,7 @@ class PractitionerService:
             raise LookupError('Practitioner not found')
         return practitioner
 
+
 class AppointmentService:
     """Coordinate booking, lookup and cancellation using the shared store."""
 

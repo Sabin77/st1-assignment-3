@@ -6,6 +6,7 @@ from smartcare.data_store import SmartCareDataStore
 from smartcare.domain import Patient, Practitioner
 from smartcare.services import PatientService, PractitionerService
 
+
 def patient_setup() -> tuple[PatientService, Patient]:
     """Create a fresh store with one registered synthetic patient."""
     data_store = SmartCareDataStore()
