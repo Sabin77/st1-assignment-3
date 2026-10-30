@@ -96,7 +96,7 @@ Create at least two focused issues. Add a linked practitioner-lookup issue or an
 
 ## G Pull request evidence
 
-Repeat this block per PR. Record actual events, not planned approvals.
+Repeat this block per PR. Record actual events, not ## H Copilot collaboration record
 
 ### PR #5: Patient lookup (issue #2)
 
@@ -104,42 +104,44 @@ Repeat this block per PR. Record actual events, not planned approvals.
 - Linked issue and requirement: https://github.com/Sabin77/st1-assignment-3/issues/2 (FR-02 Patient Search: Find a patient by patient ID)
 - Feature branch: feature/patient-lookup
 - Changed behaviour: PatientService.find_patient returns the stored Patient for a registered ID and raises LookupError for an unknown ID; blank or non-text IDs raise ValueError through the store's existing validation.
-- Meaningful commits: https://github.com/Sabin77/st1-assignment-3/commit/fe6fa292aa4e2e7848b13287aae8365bc80fde9c (Add patient lookup by ID with LookupError for unknown IDs)
-- Test command, directory and observed result: python -m pytest from project/ on fe6fa29: 13 passed (8 starter, 5 new)
-- Another-member reviewer: Requested Sabin77 and minhleee5 on 29 October 2026; review pending
-- Human observations recorded before Copilot: [link and time]
-- Requirement, responsibilities, test assertions and unrelated-scope checks: [response]
-- Key feedback: [response]
-- Author response/change and verification: [response]
+- Meaningful commits: https://github.com/Sabin77/st1-assignment-3/commit/fe6fa292aa4e2e7848b13287aae8365bc80fde9c (Add patient lookup by ID with LookupError for unknown IDs); 792d44d (Update find_patient docstring and add final newline)
+- Test command, directory and observed result: python -m pytest from project/ on fe6fa29: 13 passed (8 starter, 5 new); rerun on 792d44d: 13 passed
+- Another-member reviewer: Sabin Lamichhane (Sabin77). minhleee5 was also requested but did not review.
+- Human observations recorded before Copilot: https://github.com/Sabin77/st1-assignment-3/pull/5#issuecomment-6492891680, PR comment by Sabin77, labelled as his independent human review before the Copilot comparison
+- Requirement, responsibilities, test assertions and unrelated-scope checks: Sabin confirmed the method uses the shared store, returns the same registered object, raises LookupError for unknown IDs and relies on the store's validation; he ran the five new tests individually and the full suite (13 passed, Python 3.13.3, pytest 8.3.5) and found no issues.
+- Key feedback: Human review found no issues. Copilot (Optional): test_services.py had no final newline. Author self-check: the find_patient docstring still described the unfinished starter.
+- Author response/change and verification: Commit 792d44d updated the docstring and added the final newline; no behaviour change; python -m pytest from project/: 13 passed. Response comment: [link to your comment]
 - Reviewer recheck and approval: [link]
 - Merge outcome and SHA: [response]
-- Significant Copilot assistance: None in implementation or tests; required Copilot review comparison pending
+- Significant Copilot assistance: Part H review comparison only (see section H); no Copilot use in implementation or tests
 - Linked issue closure: [response]
 - Each member updated main: [member and confirmation]
 - Integrated verification after merge: [command, directory, result and code SHA]
-## H Copilot collaboration record
 
 Record meaningful required use, not every trivial completion. Repeat per significant interaction.
 
-- Member and task: [response]
-- Prompt/purpose and relevant issue/diff: [response]
-- Summary of output: [response]
-- Human check against actual code, requirements and tests: [response]
-- Decision — Accept / Modify / Reject: [select]
-- Reason: [response]
-- Verification/evidence: [link and result]
+### PR #5 Copilot review (patient lookup)
 
+- Member and task: Stanley Campbell; required Part H Copilot review comparison for PR #5 (issue #2, FR-02)
+- Prompt/purpose and relevant issue/diff: Stage 6 Part H prompt in Copilot Chat (PyCharm, Copilot Free) with issue #2's acceptance criteria and the PR #5 diff at fe6fa29; run after Sabin's human review was recorded
+- Summary of output: No Critical or Important findings. Optional: test_services.py ends without a final newline. Two review questions: confirm the store trims, validates and uses case-sensitive lookup; confirm test_services.py is discovered by pytest. Copilot stated it had not run the tests.
+- Human check against actual code, requirements and tests: The diff shows the "No newline at end of file" marker. data_store.find_patient calls required_text, then an exact dictionary lookup. pytest collected tests/test_services.py with 13 passed.
+- Decision — Accept / Modify / Reject: Accept (final newline); review questions checked, no code change needed
+- Reason: The newline finding was real and harmless to fix; both questions were answered by the existing code and an observed test run.
+- Verification/evidence: Commit 792d44d; python -m pytest from project/: 13 passed; PR comment 
+https://github.com/Sabin77/st1-assignment-3/pull/5#issue-6091513235
 ## I Human versus Copilot review comparison
 
-- Human reviewer noticed before consulting Copilot: [response]
-- Copilot noticed: [response]
-- Overlap: [response]
-- What did the human reviewer notice that Copilot did not: [response]
-- What did Copilot identify that the human reviewer initially missed: [response]
-- Unsupported or incorrect Copilot suggestion: [response or none identified with explanation]
-- Human judgement accepted, modified or rejected, and why: [response]
-- Which evidence justified merge approval: [response]
+### PR #5 (patient lookup)
 
+- Human reviewer noticed before consulting Copilot: Sabin confirmed correct use of the shared store, same-object return, LookupError for unknown IDs and reliance on store validation; he ran the five new tests individually and the full suite (13 passed) and found no issues.
+- Copilot noticed: No Critical or Important issues; an Optional missing final newline in test_services.py; two questions about store behaviour and test discovery.
+- Overlap: Both found the implementation met FR-02, with no correctness or scope problems.
+- What did the human reviewer notice that Copilot did not: Observed test execution on a real machine (13 passed); Copilot could not run tests and said so.
+- What did Copilot identify that the human reviewer initially missed: The missing final newline in test_services.py.
+- Unsupported or incorrect Copilot suggestion: None identified; both questions were checked against data_store.py and the pytest output and confirmed the existing behaviour.
+- Human judgement accepted, modified or rejected, and why: In PR #5 I accepted a Copilot suggestion to add a final newline because the diff showed it was missing and the fix didn't change behaviour. The two questions did not require any code change as I have checked data_store.py and the pytest output which confirmed the existing behaviour.
+- Which evidence justified merge approval: Sabin reviewed the diff and ran the tests himself. All 5 acceptance criteria in issue #2 have a test, and the full suite passed (13 passed) including the 8 starter tests which shows the change did not break other parts of the programme.
 ## J Contributions
 
 Repeat per member. Include only categories that describe actual work; write not applicable where appropriate. Pairing or mentoring can be supported by a short corroborated note.
@@ -155,8 +157,7 @@ Repeat per member. Include only categories that describe actual work; write not 
 
 ## K Exit question
 
-Why is a high commit count not necessarily evidence of strong contribution?
-
+A high commit count can be a case of quantity over quality. There could have been a lot of errors, or someone being mentored and shown how to commit. Also, different people have different workloads, and the number of commits does not show how important their work is to the project. For example, PR #5 had only 2 commits but delivered a working patient lookup feature with 5 tests, and Sabin made 0 commits but his review was still a real contribution.
 [response]
 
 ## L Stage 6 formative questions
