@@ -191,6 +191,28 @@ https://github.com/Sabin77/st1-assignment-3/pull/5#issue-6091513235
 
 Repeat per member. Include only categories that describe actual work; write not applicable where appropriate. Pairing or mentoring can be supported by a short corroborated note.
 
+### Stanley Campbell (s-campbell-dev)
+
+- Member: Stanley Campbell (s-campbell-dev, UG)
+- Implementation: Completed all three Stage 6 service operations: PatientService.find_patient (PR #5), PractitionerService.find_practitioner (PR #6) and AppointmentService.cancel_appointment (PR #7). https://github.com/Sabin77/st1-assignment-3/pull/5, https://github.com/Sabin77/st1-assignment-3/pull/6, https://github.com/Sabin77/st1-assignment-3/pull/7
+- Testing: Created tests/test_services.py with 16 tests, one per acceptance criterion across issues #2, #3 and #4, including identity checks and status-unchanged checks after errors; full suite 24 passed on d52e35d.
+- Review: Not applicable for Stage 6; my PRs were reviewed by Sabin77.
+- Issue refinement: Wrote issues #2, #3 and #4 with context, acceptance criteria, scope and Definition of Done, and corrected the FR-03 wording to match the Overview. https://github.com/Sabin77/st1-assignment-3/issues/2, https://github.com/Sabin77/st1-assignment-3/issues/3, https://github.com/Sabin77/st1-assignment-3/issues/4
+- Design and responsibility discussion: Chose to reuse the existing store validation for the lookups, and find_appointment plus Appointment.cancel() for cancellation, so domain rules stay in the domain and no validation is duplicated.
+- Debugging or integration: Responded to PR #5 review (docstring update and final newline, 792d44d); restored blank lines found in my own diff check (88ccd13); merged PR #5 (d0bbc25); pulled and verified main after each merge (13 and 18 passed); set up a clean local environment and recovered work after editing an outdated copy.
+- Documentation or team support: Maintained the Stage 6 record (sections A to M) and PR descriptions; ran the PR #5 Copilot comparison (section H). Process guidance from Claude was used and disclosed in the PR descriptions.
+
+### [Teammate name] ([GitHub username])
+
+- Member: [response]
+- Implementation: [work and evidence]
+- Testing: [work and evidence]
+- Review: [work and evidence]
+- Issue refinement: [work and evidence]
+- Design and responsibility discussion: [work and evidence]
+- Debugging or integration: [work and evidence]
+- Documentation or team support: [work and evidence]
+
 - Member: [response]
 - Implementation: [work and evidence]
 - Testing: [work and evidence]
