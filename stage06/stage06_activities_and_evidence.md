@@ -263,12 +263,12 @@ The rule is a cycle: update main, create a focused issue and branch, write the c
 
 -  Starting SHA: 22820d3125215dce5d33d1eaef2b2b6959ae431e
 - Final Stage 6 code SHA: [response]
-- Test command: [response]
-- Working directory: [response]
+- Test command: python -m pytest
+- Working directory: project/
 ---
 - Observed result: [response]
 - PR and another-member reviewer: [links]
-- Unresolved issue or none: [response]
+- Unresolved issue or none: None blocking. Optional, not done: the PR #6 Copilot suggestion of an explicit empty-string ID test was deferred because the existing blank-ID test covers it.
 - Stage 7 handover status: [ready for tutor checkpoint / unresolved work]
 - Final submitted SHA if later than tested SHA: [response and evidence-only difference]
 
