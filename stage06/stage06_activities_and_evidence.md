@@ -304,24 +304,24 @@ The rule is a cycle: update main, create a focused issue and branch, write the c
 ## M Completion and handover
 
 - Starting SHA: 22820d3125215dce5d33d1eaef2b2b6959ae431e
-- Final Stage 6 code SHA: [response]
+- Final Stage 6 code SHA: ec5cbf78fb033fcc4234a4120a345e1e4df94af9
 - Test command: python -m pytest
 - Working directory: project/
-- Observed result: [response]
-- PR and another-member reviewer: [links]
-- Unresolved issue or none: None blocking. Optional, not done: the PR #6 Copilot suggestion of an explicit empty-string ID test was deferred because the existing blank-ID test covers it.
-- Stage 7 handover status: [ready for tutor checkpoint / unresolved work]
-- Final submitted SHA if later than tested SHA: [response and evidence-only difference]
+- Observed result: 24 passed (8 starter, 5 patient, 5 practitioner, 6 cancellation) on ec5cbf7
+- PR and another-member reviewer: https://github.com/Sabin77/st1-assignment-3/pull/5, https://github.com/Sabin77/st1-assignment-3/pull/6, https://github.com/Sabin77/st1-assignment-3/pull/7; all reviewed and approved by Sabin77
+- Unresolved issue or none: None blocking. Optional, not done: the PR #6 Copilot suggestion of an explicit empty-string ID test was deferred because the existing blank-ID test covers it. PR #7 optional items: the final newline in test_services.py and docstring wording on invalid IDs were judged non-blocking; a domain-level cancellation test was deferred to Stage 7.
+- Stage 7 handover status: Ready for tutor checkpoint once this record is merged and every member has confirmed main at ec5cbf7
+- Final submitted SHA if later than tested SHA: the Stage 6 record PR merge (evidence-only; no code changes after ec5cbf7)
 
-- [ ] Three Stage 6 service targets completed and checked.
-- [ ] Original supplied tests retained and passing.
-- [ ] At least two focused issues link requirements and acceptance criteria.
-- [ ] Feature work reviewed by another member using the actual diff.
-- [ ] Human-first review and required Copilot comparison recorded.
-- [ ] Feedback resolved and approval recorded before merge.
+- [x] Three Stage 6 service targets completed and checked.
+- [x] Original supplied tests retained and passing.
+- [x] At least two focused issues link requirements and acceptance criteria.
+- [x] Feature work reviewed by another member using the actual diff.
+- [x] Human-first review and required Copilot comparison recorded.
+- [x] Feedback resolved and approval recorded before merge.
 - [ ] Everyone pulled main and integrated checks passed.
 - [ ] Required activities, quiz responses and contribution notes completed.
-- [ ] Only synthetic data included; confidential peer material kept out.
-- [ ] Tutor can trace a requirement through issue, code, tests, PR and checkpoint.
+- [x] Only synthetic data included; confidential peer material kept out.
+- [x] Tutor can trace a requirement through issue, code, tests, PR and checkpoint.
 
 Do not write a file's own future commit SHA into that file. Record the tested code SHA first, then commit the evidence; explain the difference when submitting.
