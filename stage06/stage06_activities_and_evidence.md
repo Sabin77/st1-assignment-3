@@ -140,6 +140,26 @@ Repeat this block per PR. Record actual events, not ## H Copilot collaboration r
 - Each member updated main: Stanley Campbell: git pull --ff-only to 94070f1, 18 passed; [other members when they confirm]
 - Integrated verification after merge: python -m pytest from project/ on 94070f1: 18 passed
 
+### PR #7: Appointment cancellation (issue #4)
+
+- PR link and title: https://github.com/Sabin77/st1-assignment-3/pull/7 "Add appointment cancellation that retains history (closes #4)"
+- Linked issue and requirement: https://github.com/Sabin77/st1-assignment-3/issues/4 (FR-06 Appointment Cancellation; FR-07 Retained history; AC-05.1/05.2/05.3)
+- Feature branch: feature/cancel-appointment
+- Changed behaviour: AppointmentService.cancel_appointment finds the stored appointment through find_appointment, cancels it through Appointment.cancel() and returns the same object; unknown IDs raise LookupError; blank or non-text IDs raise ValueError; CANCELLED or COMPLETED appointments raise ValueError and keep their status; nothing is deleted.
+- Meaningful commits: https://github.com/Sabin77/st1-assignment-3/commit/d52e35d95a2e031a2fbf2446c12dc270635d5db9 (Add appointment cancellation that retains history)
+- Test command, directory and observed result: python -m pytest from project/ on d52e35d: 24 passed (8 starter, 5 patient, 5 practitioner, 6 cancellation)
+- Another-member reviewer: Sabin Lamichhane (Sabin77)
+- Human observations recorded before Copilot: https://github.com/Sabin77/st1-assignment-3/pull/7 (Sabin77's "Independent Human Review – PR #7" comment, posted before his Copilot comparison)
+- Requirement, responsibilities, test assertions and unrelated-scope checks: Sabin confirmed the service locates the existing appointment, delegates cancellation to the Appointment domain object and returns the same object without deleting it; the six tests cover the acceptance criteria; changes were limited to the service and test files; he ran py -m pytest on d52e35d (24 passed, Python 3.13.3, pytest 8.3.5).
+- Key feedback: No blocking issues. Optional: test_services.py lacks a final newline; the docstring could mention invalid IDs; Copilot suggested an extra domain-level cancellation test.
+- Author response/change and verification: No code change before merge. The newline and docstring items were judged optional and non-blocking; the domain-level test was deferred to Stage 7, where domain testing is required.
+- Reviewer recheck and approval: https://github.com/Sabin77/st1-assignment-3/pull/7 (Sabin77 approved after independently testing d52e35d: 24 passed)
+- Merge outcome and SHA: Merged into main by s-campbell-dev with merge commit ec5cbf78fb033fcc4234a4120a345e1e4df94af9
+- Significant Copilot assistance: Part H review comparison by Sabin (see section H); no Copilot use in implementation or tests
+- Linked issue closure: Issue #4 closed automatically when PR #7 was merged
+- Each member updated main: Stanley Campbell: git pull --ff-only to ec5cbf7, 24 passed; [other members when they confirm]
+- Integrated verification after merge: python -m pytest from project/ on ec5cbf7: 24 passed
+
 Record meaningful required use, not every trivial completion. Repeat per significant interaction.
 
 ### PR #5 Copilot review (patient lookup)
@@ -164,6 +184,16 @@ https://github.com/Sabin77/st1-assignment-3/pull/5#issue-6091513235
 - Reason: The implementation and existing tests already satisfy the stated acceptance criteria; the extra test is optional and would not change behaviour.
 - Verification/evidence: https://github.com/Sabin77/st1-assignment-3/pull/6#issuecomment-6534901208; 18 passed in 0.09 seconds
 
+### PR #7 Copilot review (appointment cancellation)
+
+- Member and task: Sabin Lamichhane (Sabin77); required Part H Copilot review comparison for PR #7 (issue #4, FR-06/FR-07)
+- Prompt/purpose and relevant issue/diff: Copilot review of the PR #7 diff and relevant repository contracts, run after Sabin's independent human review
+- Summary of output: No Critical findings or functional blockers. Optional observations: the docstring could explicitly mention invalid IDs; an extra domain-level cancellation test could strengthen state-transition evidence; test_services.py lacks a final newline. Copilot did not execute the tests.
+- Human check against actual code, requirements and tests: Sabin confirmed the method delegates to Appointment.cancel(), returns the same stored object and preserves history; he independently tested d52e35d (24 passed).
+- Decision — Accept / Modify / Reject: Accept the functional findings; defer the domain-level test to Stage 7; treat the docstring and newline as optional, non-blocking
+- Reason: No correctness issues; Stage 7 specifically requires domain tests; the formatting items do not change behaviour.
+- Verification/evidence: https://github.com/Sabin77/st1-assignment-3/pull/7 (Sabin77's "Human vs Copilot Review Comparison – PR #7" comment); 24 passed on d52e35d
+- 
 ## I Human versus Copilot review comparison
 
 ### PR #6 (practitioner lookup)
@@ -187,6 +217,18 @@ https://github.com/Sabin77/st1-assignment-3/pull/5#issue-6091513235
 - Unsupported or incorrect Copilot suggestion: None identified; both questions were checked against data_store.py and the pytest output and confirmed the existing behaviour.
 - Human judgement accepted, modified or rejected, and why: In PR #5 I accepted a Copilot suggestion to add a final newline because the diff showed it was missing and the fix didn't change behaviour. The two questions did not require any code change as I have checked data_store.py and the pytest output which confirmed the existing behaviour.
 - Which evidence justified merge approval: Sabin reviewed the diff and ran the tests himself. All 5 acceptance criteria in issue #2 have a test, and the full suite passed (13 passed) including the 8 starter tests which shows the change did not break other parts of the programme.
+
+### PR #7 (appointment cancellation)
+
+- Human reviewer noticed before consulting Copilot: Sabin confirmed the service locates the existing appointment, delegates cancellation to the Appointment domain object and returns the same object without deleting it; the six tests cover the criteria; changes were limited to the expected files; he ran the suite on d52e35d (24 passed) and noticed the missing final newline.
+- Copilot noticed: No Critical findings; the same delegation, identity and history points; optional docstring wording on invalid IDs; an optional extra domain-level test; the missing final newline.
+- Overlap: Both found the implementation delegates to Appointment.cancel(), returns the same stored object and preserves history; both noticed the missing final newline.
+- What did the human reviewer notice that Copilot did not: Observed test execution on a real machine (24 passed); Copilot did not run the tests.
+- What did Copilot identify that the human reviewer initially missed: The docstring could mention invalid IDs, and a domain-level cancellation test could add state-transition evidence.
+- Unsupported or incorrect Copilot suggestion: None identified; the suggestions were valid but optional.
+- Human judgement accepted, modified or rejected, and why: Sabin accepted the functional findings, deferred the domain-level test to Stage 7 where domain testing is required, and treated the docstring and newline as optional because they do not change behaviour.
+- Which evidence justified merge approval: Sabin's independent review and test run (24 passed on d52e35d), all six acceptance criteria covered by tests, and no unrelated changes; after merge, main at ec5cbf7 also passed 24 tests.
+
 ## J Contributions
 
 Repeat per member. Include only categories that describe actual work; write not applicable where appropriate. Pairing or mentoring can be supported by a short corroborated note.
