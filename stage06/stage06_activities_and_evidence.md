@@ -265,6 +265,7 @@ The rule is a cycle: update main, create a focused issue and branch, write the c
 - Final Stage 6 code SHA: [response]
 - Test command: [response]
 - Working directory: [response]
+---
 - Observed result: [response]
 - PR and another-member reviewer: [links]
 - Unresolved issue or none: [response]
