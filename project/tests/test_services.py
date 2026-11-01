@@ -189,3 +189,175 @@ def test_cancel_blank_id_raises_value_error() -> None:
     with pytest.raises(ValueError):
         appointment_service.cancel_appointment(None)
     assert appointment.status is AppointmentStatus.SCHEDULED
+
+
+# Stage 7: Additional service verification
+
+
+def stage7_setup():
+    """Fresh shared store and registered participants for each test."""
+    store = SmartCareDataStore()
+    patients = PatientService(store)
+    practitioners = PractitionerService(store)
+    appointments = AppointmentService(store)
+
+    patient = patients.register_patient("P1", "Alex Example")
+    doctor1 = practitioners.register_practitioner(
+        "DR1", "Taylor Example", "General practice"
+    )
+    doctor2 = practitioners.register_practitioner(
+        "DR2", "Jordan Example", "Cardiology"
+    )
+
+    return store, patients, practitioners, appointments, patient, doctor1, doctor2
+
+
+def test_stage7_register_patient_stores_same_object():
+    store = SmartCareDataStore()
+    service = PatientService(store)
+
+    patient = service.register_patient("P1", "Alex Example")
+
+    assert store.find_patient("P1") is patient
+    assert store.list_patients() == [patient]
+
+
+def test_stage7_duplicate_patient_preserves_original():
+    store, patients, _, _, patient, _, _ = stage7_setup()
+
+    with pytest.raises(ValueError):
+        patients.register_patient("P1", "Different Person")
+
+    assert store.find_patient("P1") is patient
+    assert patient.name == "Alex Example"
+    assert len(store.list_patients()) == 1
+
+
+def test_stage7_duplicate_practitioner_preserves_original():
+    store, _, practitioners, _, _, doctor1, _ = stage7_setup()
+
+    with pytest.raises(ValueError):
+        practitioners.register_practitioner(
+            "DR1", "Different Doctor", "Neurology"
+        )
+
+    assert store.find_practitioner("DR1") is doctor1
+    assert doctor1.name == "Taylor Example"
+    assert len(store.list_practitioners()) == 2
+
+
+def test_stage7_booking_stores_registered_participants():
+    store, _, _, appointments, patient, doctor1, _ = stage7_setup()
+    slot = datetime(2026, 10, 1, 9, 0)
+
+    booked = appointments.book_appointment("A1", "P1", "DR1", slot)
+
+    assert store.find_appointment("A1") is booked
+    assert booked.patient is patient
+    assert booked.practitioner is doctor1
+    assert booked.date_time == slot
+    assert booked.status is AppointmentStatus.SCHEDULED
+
+
+def test_stage7_same_practitioner_exact_time_conflict_preserves_store():
+    store, _, _, appointments, _, _, _ = stage7_setup()
+    slot = datetime(2026, 10, 1, 9, 0)
+    original = appointments.book_appointment("A1", "P1", "DR1", slot)
+
+    with pytest.raises(ValueError):
+        appointments.book_appointment("A2", "P1", "DR1", slot)
+
+    assert store.list_appointments() == [original]
+    assert original.status is AppointmentStatus.SCHEDULED
+    assert store.find_appointment("A2") is None
+
+
+def test_stage7_different_practitioner_same_time_allowed():
+    store, _, _, appointments, _, _, _ = stage7_setup()
+    slot = datetime(2026, 10, 1, 9, 0)
+
+    first = appointments.book_appointment("A1", "P1", "DR1", slot)
+    second = appointments.book_appointment("A2", "P1", "DR2", slot)
+
+    assert first.practitioner.practitioner_id == "DR1"
+    assert second.practitioner.practitioner_id == "DR2"
+    assert first.date_time == second.date_time
+    assert store.list_appointments() == [first, second]
+
+
+def test_stage7_duplicate_appointment_id_preserves_original():
+    store, _, _, appointments, _, _, _ = stage7_setup()
+    original = appointments.book_appointment(
+        "A1", "P1", "DR1", datetime(2026, 10, 1, 9, 0)
+    )
+
+    with pytest.raises(ValueError):
+        appointments.book_appointment(
+            "A1", "P1", "DR2", datetime(2026, 10, 1, 10, 0)
+        )
+
+    assert store.find_appointment("A1") is original
+    assert store.list_appointments() == [original]
+
+
+def test_stage7_unknown_participant_rejected_without_booking():
+    store, _, _, appointments, _, _, _ = stage7_setup()
+    slot = datetime(2026, 10, 1, 9, 0)
+
+    with pytest.raises(LookupError):
+        appointments.book_appointment("A1", "P99", "DR1", slot)
+
+    with pytest.raises(LookupError):
+        appointments.book_appointment("A2", "P1", "DR99", slot)
+
+    assert store.list_appointments() == []
+def test_stage7_conflict_with_different_patient_preserves_store():
+    store, patients, _, appointments, _, _, _ = stage7_setup()
+    patients.register_patient("P2", "Morgan Example")
+    slot = datetime(2026, 10, 1, 9, 0)
+
+    original = appointments.book_appointment("A1", "P1", "DR1", slot)
+
+    with pytest.raises(ValueError):
+        appointments.book_appointment("A2", "P2", "DR1", slot)
+
+    assert store.list_appointments() == [original]
+    assert store.find_appointment("A2") is None
+    assert original.status is AppointmentStatus.SCHEDULED
+
+
+def test_stage7_same_practitioner_different_minute_allowed():
+    store, patients, _, appointments, _, _, _ = stage7_setup()
+    patients.register_patient("P2", "Morgan Example")
+
+    first = appointments.book_appointment(
+        "A1", "P1", "DR1", datetime(2026, 10, 1, 9, 0)
+    )
+    second = appointments.book_appointment(
+        "A2", "P2", "DR1", datetime(2026, 10, 1, 9, 1)
+    )
+
+    assert first.practitioner is second.practitioner
+    assert first.date_time != second.date_time
+    assert first.status is AppointmentStatus.SCHEDULED
+    assert second.status is AppointmentStatus.SCHEDULED
+    assert store.list_appointments() == [first, second]
+
+
+def test_stage7_cancelled_slot_can_be_rebooked_with_history_retained():
+    store, patients, _, appointments, _, _, _ = stage7_setup()
+    patients.register_patient("P2", "Morgan Example")
+    slot = datetime(2026, 10, 1, 9, 0)
+
+    original = appointments.book_appointment("A1", "P1", "DR1", slot)
+    appointments.cancel_appointment("A1")
+
+    replacement = appointments.book_appointment(
+        "A2", "P2", "DR1", slot
+    )
+
+    assert original.status is AppointmentStatus.CANCELLED
+    assert replacement.status is AppointmentStatus.SCHEDULED
+    assert store.find_appointment("A1") is original
+    assert store.find_appointment("A2") is replacement
+    assert store.list_appointments() == [original, replacement]
