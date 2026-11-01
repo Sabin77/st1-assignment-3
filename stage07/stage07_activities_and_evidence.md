@@ -303,14 +303,18 @@ Design tests from actual requirements, check observable outcomes and preserve re
 
 ## O Stage Completion
 
-Tested Stage 7 main SHA: Pending — Stage 7 has not yet been merged into main.
+Tested Stage 7 main SHA: fe8fa0c11efd1cccd44a20f9e51650db1bd445e4
 
-Full-suite result: 52 passed, 0 failed, in 0.11 seconds on local branch feature/stage07-testing (Python 3.13.3, pytest 8.3.5).
+Full-suite result: 52 passed, 0 failed, in 0.17 seconds using Python 3.13.3 and pytest 8.3.5.
 
-Unresolved defects and effect on baseline: None identified in the executed 52-test regression suite. This does not establish that the application is defect-free.
+Unresolved defects and effect on baseline: No defects identified in the completed Stage 7 regression suite. The existing Stage 6 baseline remains passing.
 
-Clean working tree and integration evidence: Pending. Stage 7 changes have been staged locally but not yet committed, reviewed or merged. Local PyCharm configuration file .idea/SmartCare_Starter.iml is modified and intentionally excluded from the Stage 7 commit.
+Clean working tree and integration evidence: Stage 7 PR #9 reviewed and approved by Stanley (s-campbell-dev), then merged into main. Local working-tree status requires final confirmation. Any local PyCharm configuration change is separate from Stage 7.
 
-Stage 8 handover status: Pending successful Stage 7 review, merge and verification on main. No Stage 8 work is claimed in this record.
+Stage 8 handover status: Stage 7 implementation and regression verification completed. Ready for the next assigned stage.
 
-All tutorial/formative responses and traceability/Copilot decisions complete: Sections A–N prepared; final check required before submission.
+All tutorial/formative responses and traceability/Copilot decisions complete: Completed, subject to final documentation review.
+
+Issue: https://github.com/Sabin77/st1-assignment-3/issues/10
+
+Pull request: https://github.com/Sabin77/st1-assignment-3/pull/9
