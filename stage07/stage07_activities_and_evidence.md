@@ -51,12 +51,11 @@ GitHub Copilot generates five tests, all of which pass. Two only assert that obj
 
 | Candidate | What is wrong | Rewritten test intention |
 |---|---|---|
-| 1 Ã¢â‚¬â€ Non-None assertion | Object existence does not prove correct registration or identity. | Register a patient and assert the store returns the same registered Patient object. |
-| 2 Ã¢â‚¬â€ Non-None assertion | An appointment may exist but have the wrong state or participants. | Book an appointment and assert its scheduled status and registered participant identities. |
-| 3 Ã¢â‚¬â€ assert True | It cannot detect incorrect behaviour because the assertion always succeeds. | Cancel a scheduled appointment and assert its status becomes CANCELLED. |
-| 4 Ã¢â‚¬â€ SMS notification assumption | SMS notifications are outside SmartCare's stated requirements. | Test the documented booking or cancellation result instead of invented notification behaviour. |
-| 5 Ã¢â‚¬â€ SMS notification assumption | Passing an SMS-related test would not verify FR-01, FR-05, FR-06 or FR-07. | Check that a cancelled appointment remains retrievable in current-session history. |
-
+| 1 — Non-None assertion | Object existence does not prove correct registration or identity. | Register a patient and assert the store returns the same registered Patient object. |
+| 2 — Non-None assertion | An appointment may exist but have the wrong state or participants. | Book an appointment and assert its scheduled status and registered participant identities. |
+| 3 — assert True | It cannot detect incorrect behaviour because the assertion always succeeds. | Cancel a scheduled appointment and assert its status becomes CANCELLED. |
+| 4 — SMS notification assumption | SMS notifications are outside SmartCare's stated requirements. | Test the documented booking or cancellation result instead of invented notification behaviour. |
+| 5 — SMS notification assumption | Passing an SMS-related test would not verify FR-01, FR-05, FR-06 or FR-07. | Check that a cancelled appointment remains retrievable in current-session history. |
 
 ### Tutorial exit question
 
@@ -69,18 +68,18 @@ Why can 100% code coverage coexist with poor software verification?
 Assign TEST IDs before implementation or generation. Use canonical AC IDs with their actual meaning; quote supporting revision 2 contracts when no canonical AC is assigned. Blank-ID validation is not AC-01.2. Identify supplied versus student-authored evidence.
 
 | Requirement | Acceptance criterion | Test ID | Test type | Test name / location | Expected behaviour | Result / observed status | Supplied or student-authored |
-|---|---|---|---|---|---|---|---|
-| FR-01 | AC-01.1 Ã¢â‚¬â€ valid patient registration | TEST-01 | Positive / Service | tests/test_services.py::test_register_patient_stores_same_object | A valid unused patient ID registers and stores the same object. | Planned Ã¢â‚¬â€ not executed | Student-authored |
-| FR-01 | AC-01.2 Ã¢â‚¬â€ duplicate patient ID | TEST-02 | Negative / Service | tests/test_services.py::test_duplicate_patient_id_preserves_original | Duplicate ID raises ValueError and the original record remains unchanged. | Planned Ã¢â‚¬â€ not executed | Student-authored |
-| FR-05 | AC-04.2 Ã¢â‚¬â€ different practitioner at same time | TEST-03 | Positive / Service | tests/test_services.py::test_different_practitioner_same_time_allowed | A different practitioner can be booked at the exact same time. | Planned Ã¢â‚¬â€ not executed | Student-authored |
-| FR-05 | AC-04.1 Ã¢â‚¬â€ same practitioner exact-time conflict | TEST-04 | Negative / Service | tests/test_services.py::test_same_practitioner_same_time_rejected | A conflicting scheduled booking raises ValueError without changing existing state. | Planned Ã¢â‚¬â€ not executed | Student-authored |
-| FR-06 | AC-05.1 Ã¢â‚¬â€ cancellation | TEST-05 | Positive / Service | tests/test_services.py::test_stage7_cancel_changes_status | Cancelling a scheduled appointment sets status to CANCELLED. | Planned Ã¢â‚¬â€ not executed | Student-authored |
-| FR-06 | AC-05.3 Ã¢â‚¬â€ repeated cancellation | TEST-06 | Negative / Service | tests/test_services.py::test_stage7_repeated_cancel_preserves_status | Repeated cancellation raises ValueError and preserves CANCELLED status. | Planned Ã¢â‚¬â€ not executed | Student-authored |
-| FR-07 | AC-05.2 Ã¢â‚¬â€ retained cancelled history | TEST-07 | Positive / Service | tests/test_services.py::test_stage7_cancelled_appointment_retained | The same cancelled appointment remains retrievable in current-session history. | Planned Ã¢â‚¬â€ not executed | Student-authored |
-| FR-01 | Revision 2 required-field validation contract | TEST-08 | Negative / Domain | tests/test_domain.py::test_blank_patient_id_is_rejected | Whitespace-only patient ID raises ValueError. | Planned Ã¢â‚¬â€ not executed | Student-authored |
-| FR-06 | Appointment domain transition contract | TEST-09 | Positive / Domain | tests/test_domain.py::test_domain_cancel_changes_status | Appointment.cancel changes SCHEDULED to CANCELLED. | Planned Ã¢â‚¬â€ not executed | Student-authored |
-| FR-06 | Appointment domain transition contract | TEST-10 | Negative / Domain | tests/test_domain.py::test_domain_repeated_cancel_rejected | Repeated domain cancellation raises ValueError and keeps CANCELLED status. | Planned Ã¢â‚¬â€ not executed | Student-authored |
-| FR-04 | Appointment construction contract | TEST-11 | Positive / Domain | tests/test_domain.py::test_new_appointment_starts_scheduled | A newly constructed appointment starts SCHEDULED. | Planned Ã¢â‚¬â€ not executed | Student-authored |
+|---|---|---|---|---|---|--------------------------|---|
+| FR-01 | AC-01.1 — valid patient registration | TEST-01 | Positive / Service | tests/test_services.py::test_register_patient_stores_same_object | A valid unused patient ID registers and stores the same object. | Passed                   | Student-authored |
+| FR-01 | AC-01.2 — duplicate patient ID | TEST-02 | Negative / Service | tests/test_services.py::test_duplicate_patient_id_preserves_original | Duplicate ID raises ValueError and the original record remains unchanged. | Passed                   | Student-authored |
+| FR-05 | AC-04.2 — different practitioner at same time | TEST-03 | Positive / Service | tests/test_services.py::test_different_practitioner_same_time_allowed | A different practitioner can be booked at the exact same time. | Passed                   | Student-authored |
+| FR-05 | AC-04.1 — same practitioner exact-time conflict | TEST-04 | Negative / Service | tests/test_services.py::test_same_practitioner_same_time_rejected | A conflicting scheduled booking raises ValueError without changing existing state. | Passed                   | Student-authored |
+| FR-06 | AC-05.1 — cancellation | TEST-05 | Positive / Service | tests/test_services.py::test_stage7_cancel_changes_status | Cancelling a scheduled appointment sets status to CANCELLED. | Passed                   | Student-authored |
+| FR-06 | AC-05.3 — repeated cancellation | TEST-06 | Negative / Service | tests/test_services.py::test_stage7_repeated_cancel_preserves_status | Repeated cancellation raises ValueError and preserves CANCELLED status. | Passed                   | Student-authored |
+| FR-07 | AC-05.2 — retained cancelled history | TEST-07 | Positive / Service | tests/test_services.py::test_stage7_cancelled_appointment_retained | The same cancelled appointment remains retrievable in current-session history. | Passed                   | Student-authored |
+| FR-01 | Revision 2 required-field validation contract | TEST-08 | Negative / Domain | tests/test_domain.py::test_blank_patient_id_is_rejected | Whitespace-only patient ID raises ValueError. | Passed                   | Student-authored |
+| FR-06 | Appointment domain transition contract | TEST-09 | Positive / Domain | tests/test_domain.py::test_domain_cancel_changes_status | Appointment.cancel changes SCHEDULED to CANCELLED. | Passed                   | Student-authored |
+| FR-06 | Appointment domain transition contract | TEST-10 | Negative / Domain | tests/test_domain.py::test_domain_repeated_cancel_rejected | Repeated domain cancellation raises ValueError and keeps CANCELLED status. | Passed                   | Student-authored |
+| FR-04 | Appointment construction contract | TEST-11 | Positive / Domain | tests/test_domain.py::test_new_appointment_starts_scheduled | A newly constructed appointment starts SCHEDULED. | Passed                   | Student-authored |
 ## C Test Design
 
 
@@ -141,9 +140,9 @@ Assign TEST IDs before implementation or generation. Use canonical AC IDs with t
 | TEST-02 | Duplicate patient does not overwrite original | FR-01 / AC-01.2 | tests/test_services.py::test_stage7_duplicate_patient_preserves_original | Passed |
 | TEST-03 | Different practitioner at same time allowed | FR-05 / AC-04.2 | tests/test_services.py::test_stage7_different_practitioner_same_time_allowed | Passed |
 | TEST-04 | Exact-time practitioner conflict | FR-05 / AC-04.1 | tests/test_services.py::test_stage7_same_practitioner_exact_time_conflict_preserves_store | Passed |
-| TEST-05 | Cancel scheduled appointment | FR-06 / AC-05.1 | tests/test_services.py::test_cancel_scheduled_returns_same_cancelled_object | Passed Ã¢â‚¬â€ supplied Stage 6 test |
-| TEST-06 | Reject repeated cancellation | FR-06 / AC-05.3 | tests/test_services.py::test_cancel_twice_raises_value_error | Passed Ã¢â‚¬â€ supplied Stage 6 test |
-| TEST-07 | Retain cancelled appointment history | FR-07 / AC-05.2 | tests/test_services.py::test_cancelled_appointment_is_retained_in_history | Passed Ã¢â‚¬â€ supplied Stage 6 test |
+| TEST-05 | Cancel scheduled appointment | FR-06 / AC-05.1 | tests/test_services.py::test_cancel_scheduled_returns_same_cancelled_object | Passed — supplied Stage 6 test |
+| TEST-06 | Reject repeated cancellation | FR-06 / AC-05.3 | tests/test_services.py::test_cancel_twice_raises_value_error | Passed — supplied Stage 6 test |
+| TEST-07 | Retain cancelled appointment history | FR-07 / AC-05.2 | tests/test_services.py::test_cancelled_appointment_is_retained_in_history | Passed — supplied Stage 6 test |
 | TEST-12 | Different-patient practitioner conflict | FR-05 / AC-04.1 | tests/test_services.py::test_stage7_conflict_with_different_patient_preserves_store | Passed |
 | TEST-13 | Different-minute booking accepted | FR-05 / AC-04.1 | tests/test_services.py::test_stage7_same_practitioner_different_minute_allowed | Passed |
 | TEST-14 | Cancelled slot rebooked with history retained | FR-05 / AC-04.1; FR-07 / AC-05.2 | tests/test_services.py::test_stage7_cancelled_slot_can_be_rebooked_with_history_retained | Passed |
@@ -168,9 +167,9 @@ Connect cases to actual contracts and verify unchanged state after rejection.
 
 ## H GitHub Copilot Test Design
 
-Requirement: FR-05 Ã¢â‚¬â€ Prevent practitioner booking conflicts.
+Requirement: FR-05 — Prevent practitioner booking conflicts.
 
-Acceptance criterion: AC-04.1 Ã¢â‚¬â€ A practitioner must not have two SCHEDULED appointments at the exact same date and time.
+Acceptance criterion: AC-04.1 — A practitioner must not have two SCHEDULED appointments at the exact same date and time.
 
 Behaviour to test: Booking conflict detection must depend on the practitioner, exact datetime and SCHEDULED status, while rejected operations must leave stored records unchanged.
 
@@ -178,35 +177,35 @@ Human-first test idea/categories: Before requesting Copilot suggestions, I desig
 
 Prompt and purpose: Asked GitHub Copilot Chat to suggest positive, negative and boundary test ideas for AC-04.1 without duplicating existing tests, inventing requirements or modifying code.
 
-- Copilot test idea/candidate: Candidate 1 Ã¢â‚¬â€ Same practitioner and datetime, but a different patient.
+- Copilot test idea/candidate: Candidate 1 — Same practitioner and datetime, but a different patient.
 - What it claims to verify: Conflict rejection is based on practitioner and datetime, regardless of patient identity; rejected booking does not mutate the store.
 - Requirement trace: FR-05 / AC-04.1.
 - Assertion quality: Strong if the exception, original object/status, list length and absence of the second appointment are all checked.
 - Human critique: Copilot incorrectly called this a positive test; it is a negative test. It adds useful coverage because the existing human test used the same patient for both bookings.
 - Decision: Accept as a new negative test idea, subject to implementation and execution.
 - Reason: Detects implementations that incorrectly use patient identity in conflict detection.
-- Final test reference if accepted/modified: Planned Ã¢â‚¬â€ tests/test_services.py::test_stage7_conflict_with_different_patient_preserves_store.
-- Actual verification result: Not executed yet.
+- Final test reference if accepted/modified: Planned — tests/test_services.py::test_stage7_conflict_with_different_patient_preserves_store.
+- Actual verification result: Passed — verified in the 52-test
 
-- Copilot test idea/candidate: Candidate 2 Ã¢â‚¬â€ Same practitioner at a different minute.
+- Copilot test idea/candidate: Candidate 2 — Same practitioner at a different minute.
 - What it claims to verify: Two SCHEDULED appointments for the same practitioner are allowed when datetimes differ.
 - Requirement trace: FR-05 / AC-04.1, exact-time conflict boundary.
 - Assertion quality: Strong if both appointment objects are stored with the intended distinct times and remain SCHEDULED.
 - Human critique: Useful complementary behaviour. The exact minute difference matters because the domain supports minute-precision datetimes, not duration-based overlap rules.
 - Decision: Accept as a new boundary test idea, subject to implementation and execution.
 - Reason: Detects an overly broad implementation that rejects every subsequent booking for a practitioner.
-- Final test reference if accepted/modified: Planned Ã¢â‚¬â€ tests/test_services.py::test_stage7_same_practitioner_different_minute_allowed.
-- Actual verification result: Not executed yet.
+- Final test reference if accepted/modified: Planned — tests/test_services.py::test_stage7_same_practitioner_different_minute_allowed.
+- Actual verification result: Passed — verified in the 52-test
 
-- Copilot test idea/candidate: Candidate 3 Ã¢â‚¬â€ Cancelled appointment does not block a new booking at the same time.
+- Copilot test idea/candidate: Candidate 3 — Cancelled appointment does not block a new booking at the same time.
 - What it claims to verify: Only SCHEDULED appointments create practitioner conflicts.
 - Requirement trace: FR-05 / AC-04.1 and FR-06 / AC-05.1.
 - Assertion quality: Strong if both retained cancelled history and the newly stored SCHEDULED appointment are verified.
 - Human critique: Valuable status boundary; the cancellation must remain in the store, not be deleted to make the test pass.
 - Decision: Modify and retain as a new boundary test idea, subject to implementation and execution.
 - Reason: Strengthen Copilot's suggested assertions by checking both the original CANCELLED appointment remains stored and the replacement booking succeeds.
-- Final test reference if accepted/modified: Planned Ã¢â‚¬â€ tests/test_services.py::test_stage7_cancelled_slot_can_be_rebooked_with_history_retained.
-- Actual verification result: Not executed yet.
+- Final test reference if accepted/modified: Planned — tests/test_services.py::test_stage7_cancelled_slot_can_be_rebooked_with_history_retained.
+- Actual verification result: Passed — verified in the 52-test
 
 ## I Weak Copilot Test Reflection
 
@@ -230,14 +229,14 @@ Run python -m pytest from project/. Retain all accumulated tests. Record the tes
 
 | Command | Working directory | Code SHA | Passed | Failed | Failure summary | Product defect / test defect / unresolved | Evidence and interpretation |
 |---|---|---|-----|--------|---|---|---|
-| `py -m pytest` | `project/` | `ec5cbf78fb033fcc4234a4120a345e1e4df94af9` | 24 | 0 | None Ã¢â‚¬â€ all tests passed | No defects identified in this run | Stage 7 baseline: 24 tests passed in 0.29 seconds using Python 3.13.3 and pytest 8.3.5. This confirms the integrated Stage 6 regression tests passed before adding Stage 7 tests. |
-| `py -m pytest` | `project/` | Local Stage 7 working tree; SHA pending commit | 49 | 0 | None Ã¢â‚¬â€ all tests passed | No defects identified in this run | 17 domain, 24 service and 8 starter tests passed in 0.13 seconds using Python 3.13.3 and pytest 8.3.5. |
+| `py -m pytest` | `project/` | `ec5cbf78fb033fcc4234a4120a345e1e4df94af9` | 24 | 0 | None — all tests passed | No defects identified in this run | Stage 7 baseline: 24 tests passed in 0.29 seconds using Python 3.13.3 and pytest 8.3.5. This confirms the integrated Stage 6 regression tests passed before adding Stage 7 tests. |
+| `py -m pytest` | `project/` | Local Stage 7 working tree; SHA pending commit | 49 | 0 | None — all tests passed | No defects identified in this run | 17 domain, 24 service and 8 starter tests passed in 0.13 seconds using Python 3.13.3 and pytest 8.3.5. |
+| `py -m pytest` | `project/` | `2d84d2fe1fd86eb5a680fedcab5f2c92f93addff` | 52 | 0 | None — all tests passed | No defects identified in this run | Full Stage 7 regression: 17 domain tests, 27 service tests and 8 starter tests passed in 0.11 seconds. Independently verified by Stanley on the same commit. |
 
-Individual test runs and changed-order independence evidence: [commands, results, links]
+Individual test runs and changed-order independence evidence: py -m pytest tests/test_domain.py -v — 17 passed in 0.39 seconds. The full regression suite passed with 52 tests. Changed-order independence was not separately tested.
 Optional tutor-led demonstration notes: [optional; leave blank if not used]
 A meaningful test should detect a relevant incorrect result. Students do not have to perform the demonstration or submit failure/restoration evidence for assessment. The tutor restores the example and reruns its tests. This is not a Stage 8 fault activity.
-Requirement Ã¢â€ â€™ test Ã¢â€ â€™ failure/observation Ã¢â€ â€™ diagnosis Ã¢â€ â€™ change Ã¢â€ â€™ verification: [concise links where applicable]
-
+Requirement → test → failure/observation → diagnosis → change → verification: [concise links where applicable]
 ## K What the Suite Still Does Not Prove
 
 What does your test suite still not prove? The tests verify selected domain, service and current-session storage behaviours. They do not establish full user-interface usability, performance, security or cross-session persistence. Stage 9 practitioner appointment listing is not implemented in the current services.py and is outside this Stage 7 verification.
@@ -254,9 +253,9 @@ Use links rather than copying GitHub history. Continue the Stage 6 workflow; no 
 
 | Issue/task | Branch | PR | Reviewer | Key feedback | Outcome |
 |---|---|---|---|---|---|
-| Stage 7 domain and service testing | `feature/stage07-testing` | Pending | Pending teammate review | 17 domain tests and 11 additional service tests implemented; full suite passed | 52 passed, 0 failed; PR pending |
-| Stage 7 Copilot test review | `feature/stage07-testing` | To be included in Stage 7 PR | Human review by Sabin; independent teammate review pending | Accepted two test ideas and modified one; strengthened assertions to verify unchanged state and retained history | Three human-reviewed tests passed |
-| Stage 7 evidence and traceability | `feature/stage07-testing` | To be included in Stage 7 PR | Pending | Documented test design, acceptance-criterion mapping, Copilot critique and regression results | Evidence prepared; integration pending |
+| Issue #10 — Stage 7 Testing and Verification | `feature/stage07-testing` | [PR #9](https://github.com/Sabin77/st1-assignment-3/pull/9) | Stanley (`s-campbell-dev`) | Independently ran the full pytest suite and confirmed 52 passed. Requested a linked issue and tested commit SHA in the evidence record. | Approved; review feedback addressed locally; updated documentation pending push and final merge. |
+| Domain and service test implementation | `feature/stage07-testing` | [PR #9](https://github.com/Sabin77/st1-assignment-3/pull/9) | Stanley (`s-campbell-dev`) | Confirmed that 17 domain tests and 11 additional service tests were included, previous tests retained and production code unchanged. | Approved; 52 tests passed. |
+| Copilot-assisted test design and traceability | `feature/stage07-testing` | [PR #9](https://github.com/Sabin77/st1-assignment-3/pull/9) | Human review by Sabin; independent PR review by Stanley | Two Copilot ideas accepted and one modified to strengthen state-preservation and retained-history assertions. | Three reviewed test cases passed; PR integration pending. |
 
 ## M Contribution Evidence
 
@@ -301,7 +300,7 @@ Design tests from actual requirements, check observable outcomes and preserve re
 
 ## O Stage Completion
 
-Tested Stage 7 main SHA: Pending Ã¢â‚¬â€ Stage 7 has not yet been merged into main.
+Tested Stage 7 main SHA: Pending — Stage 7 has not yet been merged into main.
 
 Full-suite result: 52 passed, 0 failed, in 0.11 seconds on local branch feature/stage07-testing (Python 3.13.3, pytest 8.3.5).
 
@@ -311,4 +310,4 @@ Clean working tree and integration evidence: Pending. Stage 7 changes have been 
 
 Stage 8 handover status: Pending successful Stage 7 review, merge and verification on main. No Stage 8 work is claimed in this record.
 
-All tutorial/formative responses and traceability/Copilot decisions complete: Sections AÃ¢â‚¬â€œN prepared; final check required before submission.
+All tutorial/formative responses and traceability/Copilot decisions complete: Sections A–N prepared; final check required before submission.
