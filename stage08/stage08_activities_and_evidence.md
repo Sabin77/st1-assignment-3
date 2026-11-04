@@ -52,32 +52,75 @@ Command: python -m pytest -q tests/test_services.py::test_cancelled_appointment_
 
 - Hypothesis: `cancel_appointment` removes the appointment from the data store instead of only setting its status to CANCELLED, so later lookups return `None`.
 
-- Evidences: the body of `cancel_appointment` in `smartcare/services.py`. Inspect whether it sets the status to CANCELLED, or removes the appointment from the database.
+- Evidences: the body of `cancel_appointment` in `smartcare/services.py`. Inspect whether it sets the status to CANCELLED  , or removes the appointment from the database.
 
 ### A.3 Test defect or product defect
 
 A test expects cancelled appointments to be deleted, but FR-07 says history must be retained. What should be changed? Explain why. Also decide whether a test expecting different practitioners at the same time to conflict reflects AC-04.2. Do not assume every failing test is correct.
 
-Response and reason: [complete]
+Response and reason: Change the test that expects deletion, because it contradicts FR-07 (history must be retained). The code’s retain-and-mark-CANCELLED behaviour is the requirement. A test expecting different practitioners at the same time to conflict does not reflect AC-04.2, which defines conflicts per practitioner, so that test should be corrected, not the code.
 
 ### A.4 Refactoring smell hunt
 
 Consider a hypothetical 70-line AppointmentService method containing duplicate status strings, direct collection manipulation, printing, validation and four nested conditionals. Identify the smells and propose small refactorings that preserve required behaviour. The direct collection work replaces the old storage-specific scenario; use the existing SmartCareDataStore boundary. Do not implement an extra architecture.
-Classify these proposed changes as refactoring, repair or feature: rename appt to appointment; extract a repeated conflict helper; add rescheduling; restore retained cancellation lookup; replace a magic status string with the existing enum. Explain the behaviour that must remain unchanged.
 
-Response and reason: [complete]w
+Classify these proposed changes as refactoring, repair or feature: rename appt to appointment; extract a repeated conflict helper; add rescheduling; restore retained cancellation lookup; replace a magic status string with the existing enum. 
+
+Explain the behaviour that must remain unchanged.
+
+Response and reason: 
+- Smell and refactorings
++ Duplicate status strings: Replace them with the existing `AppointmentStatus` enum. Stored status values and conflict and cancellation outcomes must stay the same.
++ Direct collection manipulation: Move that behind the existing `SmartCareDataStore` methods such as `find_appointment` and `has_practitioner_conflict`, without adding new architecture. The same records must be stored, found and returned.
++ Printing inside business logic: Remove the `print` or move it to the caller, and rely on return values or exceptions instead. The return value and raised exceptions must not change.
++ Validation mixed with logic: Extract validation into a helper that runs first. The same `ValueError` and `LookupError` types and conditions must apply.
++ Four nested conditionals: Use guard clauses and flatten the conditions. Every input must still take the same path to the same outcome.
+
+- Classifying the proposed changes
++ Rename appt to appointment: refactoring. Only readability changes, with no behaviour change.
++ Extract a repeated conflict helper: refactoring. Same checks and same results, just without duplication.
++ Add rescheduling: feature. It adds new behaviour that did not exist, so it needs new requirements and tests.
++ Restore retained cancellation lookup: repair. Current behaviour violates FR-07, so behaviour does change, to match the requirement.
++ Replace a magic status string with the existing enum: refactoring. Same value with a safer representation. The enum’s value must equal the old string if it is stored or compared externally.
+
+- Behaviour that must remain unchanged:
++ Public method signatures and return values.
++ Which exceptions are raised, with which types, for which inputs: `ValueError` for invalid input, duplicate IDs and conflicts, and `LookupError` for missing participants.
++ Conflict rules from AC-04.2.
++ Cancelled appointments stay stored with status CANCELLED.
++ Tests that currently pass must still pass.
+
 
 ### A.5 Traceback and hypothesis ranking
 
 Using one actual failure, identify its exception/assertion, expected and observed values, test line, application call path and supporting requirement. List three plausible causes and rank them by fit with the available evidence. For each cause, name a check that could distinguish it from the others. Explain why a traceback alone does not establish the cause.
 
-Response and reason: [complete]
+Response and reason:
+
+- Failure chosen: `test_cancelled_appointment_is_retained_in_history`
++ Exception/assertion: `LookupError('Appointment not found')`, raised before `assert` could compare anything.
++ Expected: `find_appointment('A1')` returns the same appointment object, now with status CANCELLED.
++ Observed: `LookupError`. The stage 7 test shows the underlying store returning `None` for `A1` after a cancel.
++ Test line: `tests\test_services.py:147`, `assert appointment_service.find_appointment('A1')` is appointment.
++ Call path: the test calls `cancel_appointment('A1')`, which succeeds. It then calls `AppointmentService.find_appointment('A1')`, which calls `data_store.find_appointment('A1')`. That returns `None`, so `services.py:136` `raises LookupError`.
++ Requirement: FR-07
+
+- Plausible causes
++ `SmartCareDataStore.find_appointment` hides `CANCELLED` records. The first cancel succeeded, so the record existed. The project has no public delete operation, which makes filtering at lookup more likely than deletion.
+   Check: read the store’s find_appointment, then print the store’s internal appointment collection right after the cancel. If 'A1' is still in it, this is the cause.
++ `cancel_appointment` removes the record. This is your original hypothesis, and it fits because the record is gone after the cancel.
+   Check: print the collection before and after the cancel. If 'A1' is absent afterward and was present before, it was removed, which rules out cause 1.
++ The record is still stored, but under a different key. For example, the key was altered or normalised during cancellation. This fits least, because nothing in the output hints at a key change.
+   Check: compare the collection’s keys and its length before and after the cancel. If the length is unchanged but 'A1' is not a key, this is the cause.
+
+- Why a traceback alone doesn’t establish the cause:
++ The faulty step happened earlier, inside the cancel or the store, and that part never appears in the traceback.
 
 ### A.6 Exit question
 
 Why is changing code immediately after seeing a failure often a poor debugging strategy?
 
-Response and reason: [complete]
+Response and reason: Because it might lead to changing the wrong code. For example, the `LookupError` at `line 136` is correct behaviour. Editing that line would hide the problem while the real cause stays.
 
 Classification responses (1–5, each with reason): [complete]
 Tutorial debugging record — expected; observed; reproduction; hypothesis; evidence to inspect: [complete]
