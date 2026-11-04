@@ -128,8 +128,8 @@ Traceback — exception/assertion; expected/observed values; test line; call pat
 
 ## B. Stage 7 baseline and safe preparation
 
-- Stage 7 code SHA and requirement baseline: [complete]
-- Baseline test command / working directory / observed result / evidence: [complete]
+- Stage 7 code SHA and requirement baseline: 5518a276c258c50d100ba0550af72367599cdf37
+- Baseline test command / working directory / observed result / evidence: `python -m pytest -q`,  `...\st1-assignment-3\project`, result 7 failed, 45 passed in 0.22s. Key failures: the cancelled-history tests and the stage 7 / starter conflict tests.
 - Clean preparation SHA if a record-only commit followed Stage 7: [complete]
 - Branch and preparer / how teammates obtained this branch: [complete]
 - Downloaded tool version, source SHA256 and --check outcome: [complete]
@@ -141,14 +141,18 @@ Traceback — exception/assertion; expected/observed values; test line; call pat
 
 ## C. F8-01 diagnosis and repair
 
-- Symptom / observed behaviour: [complete]
-- Expected behaviour and requirement: [complete]
-- Minimal synthetic reproduction steps: [complete]
-- Meaningful failing test path/name and exact relevant failure: [complete]
+- Symptom / observed behaviour: After cancel_appointment('A1'), find_appointment('A1') raises LookupError: Appointment not found, and the data store’s find_appointment('A1') returns None. The appointment disappears after cancellation.
+- Expected behaviour and requirement: The appointment stays stored with status CANCELLED and can still be found and listed. Requirement: FR-07 (history must be retained). Check the exact wording in your spec.
+- Minimal synthetic reproduction steps: 
++ Create a data store, an `AppointmentService`, and an appointment A1.
++ Call `cancel_appointment('A1')`.
++ Call `find_appointment('A1')`. Expected: the appointment. Observed: `LookupError`.
+- Meaningful failing test path/name and exact relevant failure: 
+`tests/test_servicespy::test_cancelled_appointment_is_retained_in_history`, failing at `tests\test_services.py:147` with `LookupError: Appointment not found raised from smartcare\services.py:136.`
 - Human hypothesis and intended checks: see E, F8-01.
-- Supported root cause and inspected code/runtime evidence: [complete after diagnosis]
-- Smallest justified fix / diff / why other behaviour is preserved: [complete]
-- Repair SHA / focused verification result: [complete]
+- Supported root cause and inspected code/runtime evidence: `cancel_appointment` only calls `appointment.cancel()` and does not delete. `SmartCareDataStore.find_appointment` skips appointments whose status is "cancelled", so it returns `None` and the service raises `LookupError`. Evidence: inspected both methods in services.py and data_store.py
+- Smallest justified fix / diff / why other behaviour is preserved: Removed the `status.value != "cancelled"` condition so lookup matches by ID only. Blank IDs still raise `ValueError`, and unknown IDs still return `None`.
+- Repair SHA / focused verification result: `e22c410005c13059fc051685c7067fe21b40ae29`, The focused test now passes (previously LookupError). Full suite: <X failed, Y passed>.
 
 ## D. F8-02 diagnosis and repair
 
