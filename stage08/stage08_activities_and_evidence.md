@@ -148,20 +148,21 @@ Traceback — exception/assertion; expected/observed values; test line; call pat
 + Call `cancel_appointment('A1')`.
 + Call `find_appointment('A1')`. Expected: the appointment. Observed: `LookupError`.
 - Meaningful failing test path/name and exact relevant failure: 
-`tests/test_servicespy::test_cancelled_appointment_is_retained_in_history`, failing at `tests\test_services.py:147` with `LookupError: Appointment not found raised from smartcare\services.py:136.`
+`tests/test_services.py::test_cancelled_appointment_is_retained_in_history`, failing at `tests\test_services.py:147` with `LookupError: Appointment not found raised from smartcare\services.py:136.`
 - Human hypothesis and intended checks: see E, F8-01.
 - Supported root cause and inspected code/runtime evidence: `cancel_appointment` only calls `appointment.cancel()` and does not delete. `SmartCareDataStore.find_appointment` skips appointments whose status is "cancelled", so it returns `None` and the service raises `LookupError`. Evidence: inspected both methods in services.py and data_store.py
 - Smallest justified fix / diff / why other behaviour is preserved: Removed the `status.value != "cancelled"` condition so lookup matches by ID only. Blank IDs still raise `ValueError`, and unknown IDs still return `None`.
-- Repair SHA / focused verification result: `e22c410005c13059fc051685c7067fe21b40ae29`, The focused test now passes (previously LookupError). Full suite: <X failed, Y passed>.
+- Repair SHA / focused verification result: `e22c410005c13059fc051685c7067fe21b40ae29`. Focused test `tests/test_services.py::test_cancelled_appointment_is_retained_in_history`: failed before the fix (`LookupError: Appointment not found`), passes after (`1 passed`). Full suite after the fix: <`4 failed, 48 passed`>. Remaining failures are the separate practitioner-conflict fault, not F8-01.
 
 ## D. F8-02 diagnosis and repair
 
-- Symptom / observed behaviour: [complete]
-- Expected behaviour and requirement: [complete]
-- Minimal synthetic reproduction steps: [complete]
-- Meaningful failing test path/name and exact relevant failure: [complete]
+- Symptom / observed behaviour: Conflict checks are backwards. The same practitioner at the same time is accepted (no ValueError), while a different practitioner at the same time is rejected.
+- Expected behaviour and requirement: A conflict exists only when the same practitioner already has a `SCHEDULED` appointment at that exact time. Different practitioners at the same time are allowed.
+- Minimal synthetic reproduction steps: Book `A1` with `DR1` at 2026-10-01 09:00. Book `A2` with `DR1` at the same time (expected ValueError, observed: accepted). Book `A2` with `DR2` at the same time (expected: accepted, observed: ValueError).
+- Meaningful failing test path/name and exact relevant failure: 
+`tests/test_services.py::test_stage7_different_practitioner_same_time_allowed, line 280, ValueError: Practitioner already has a SCHEDULED appointment at this time from smartcare\services.py:122.`
 - Human hypothesis and intended checks: see E, F8-02.
-- Supported root cause and inspected code/runtime evidence: [complete after diagnosis]
+- Supported root cause and inspected code/runtime evidence: `has_practitioner_conflict` in `data_store.py` uses `!=` instead of `==` when comparing practitioner IDs, so it flags other practitioners and misses the same one. Evidence: inspected the method and failing tests at `tests\test_services.py:267` and `:280`
 - Smallest justified fix / diff / why other behaviour is preserved: [complete]
 - Repair SHA / focused verification result: [complete]
 
