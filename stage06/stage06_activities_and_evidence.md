@@ -3,7 +3,7 @@
 Complete this one group record. Link actual issues, diffs, tests and reviews; avoid copying entire histories. Blank fields are intentional. Duplicate rows as needed. Use synthetic data only. Every member records their own meaningful contribution. Do not invent results, reviews or Copilot use.
 
 - Group/tutorial: Tuesday 1:30
-- Members, GitHub usernames and cohorts: Stanley Campbell (https://github.com/s-campbell-dev , UG), Shaban Mohseni(AceofSpade-Py, UG) ,Nhat Minh Le (https://github.com/minhleee5 , UG),Sabin Lamichhane  (https://github.com/Sabin77 ,PG)
+- Members, GitHub usernames and cohorts: Stanley Campbell (https://github.com/s-campbell-dev , UG), Shaban Mohseni(https://github.com/AceOfSpade-Py), UG) ,Nhat Minh Le (https://github.com/minhleee5 , UG),Sabin Lamichhane  (https://github.com/Sabin77 ,PG)
 - Repository URL: https://github.com/Sabin77/st1-assignment-3.git
 - Starting SHA: 22820d3125215dce5d33d1eaef2b2b6959ae431e (baseline: python -m pytest from project/, 8 passed, Python 3.13.14, pytest 8.3.5)
 ## A Requirement to issue activities
