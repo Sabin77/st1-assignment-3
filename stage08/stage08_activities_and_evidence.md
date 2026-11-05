@@ -166,7 +166,7 @@ Traceback — exception/assertion; expected/observed values; test line; call pat
 - Smallest justified fix / diff / why other behaviour is preserved: 
 + Changed one operator in `SmartCareDataStore.has_practitioner_conflict`
 + Other behaviour is preserved because the other conditions are untouched: `exclude_appointment_id` still skips the excluded appointment, the time must still match exactly, and only "scheduled" appointments count, so cancelled slots can still be rebooked. `book_appointment` in `services.py` is unchanged.
-- Repair SHA / focused verification result:
+- Repair SHA / focused verification result: 42b858c294d060cb929813cb8087afd1bed6126b, Focused test `tests/test_services.py::test_stage7_different_practitioner_same_time_allowed` failed before the fix and passes after (1 passed). Full suite: 52 passed 
 
 ## E. Human-first hypotheses
 
