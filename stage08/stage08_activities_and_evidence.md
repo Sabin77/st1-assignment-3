@@ -152,7 +152,7 @@ Traceback — exception/assertion; expected/observed values; test line; call pat
 - Human hypothesis and intended checks: see E, F8-01.
 - Supported root cause and inspected code/runtime evidence: `cancel_appointment` only calls `appointment.cancel()` and does not delete. `SmartCareDataStore.find_appointment` skips appointments whose status is "cancelled", so it returns `None` and the service raises `LookupError`. Evidence: inspected both methods in services.py and data_store.py
 - Smallest justified fix / diff / why other behaviour is preserved: Removed the `status.value != "cancelled"` condition so lookup matches by ID only. Blank IDs still raise `ValueError`, and unknown IDs still return `None`.
-- Repair SHA / focused verification result: `e22c410005c13059fc051685c7067fe21b40ae29`. Focused test `tests/test_services.py::test_cancelled_appointment_is_retained_in_history`: failed before the fix (`LookupError: Appointment not found`), passes after (`1 passed`). Full suite after the fix: <`4 failed, 48 passed`>. Remaining failures are the separate practitioner-conflict fault, not F8-01.
+- Repair SHA / focused verification result: `e22c410005c13059fc051685c7067fe21b40ae29`. Focused test `tests/test_services.py::test_cancelled_appointment_is_retained_in_history`: failed before the fix (`LookupError: Appointment not found`), passes after (`1 passed`). Full suite after the fix: `4 failed, 48 passed`. Remaining failures are the separate practitioner-conflict fault, not F8-01.
 
 ## D. F8-02 diagnosis and repair
 
@@ -163,8 +163,10 @@ Traceback — exception/assertion; expected/observed values; test line; call pat
 `tests/test_services.py::test_stage7_different_practitioner_same_time_allowed, line 280, ValueError: Practitioner already has a SCHEDULED appointment at this time from smartcare\services.py:122.`
 - Human hypothesis and intended checks: see E, F8-02.
 - Supported root cause and inspected code/runtime evidence: `has_practitioner_conflict` in `data_store.py` uses `!=` instead of `==` when comparing practitioner IDs, so it flags other practitioners and misses the same one. Evidence: inspected the method and failing tests at `tests\test_services.py:267` and `:280`
-- Smallest justified fix / diff / why other behaviour is preserved: [complete]
-- Repair SHA / focused verification result: [complete]
+- Smallest justified fix / diff / why other behaviour is preserved: 
++ Changed one operator in `SmartCareDataStore.has_practitioner_conflict`
++ Other behaviour is preserved because the other conditions are untouched: `exclude_appointment_id` still skips the excluded appointment, the time must still match exactly, and only "scheduled" appointments count, so cancelled slots can still be rebooked. `book_appointment` in `services.py` is unchanged.
+- Repair SHA / focused verification result:
 
 ## E. Human-first hypotheses
 
@@ -172,7 +174,7 @@ Complete both entries BEFORE Copilot. C/D supply observed/expected/reproduction/
 
 ### F8-01 human entry
 
-Likely cause and why plausible: [complete]
+Likely cause and why plausible: `cancel_appointment` removes the appointment from the data store instead of only setting its status to `CANCELLED`. Plausible because the record is gone after the cancel and the test failure is a “not found” error.
 Evidence intended to inspect / competing explanation / discriminating check: [complete]
 Member and saved sequence/time or commit showing this preceded consultation: [complete]
 
