@@ -23,39 +23,102 @@ For each, choose symptom, evidence or hypothesis/opinion, and explain your reaso
 - Traceback points to smartcare/services.py line 42 in the example.
   The example line number is illustrative; inspect the actual line in your run. The removal hypothesis must be tested against the current project, which has no public delete operation.
 
-Response and reason: Appointment disappears afteer cancellation
-ReasonL
+Response and reason: [complete]
 
 ### A.2 Build a debugging record
 
 Choose the cancelled-history scenario or a same-practitioner/time booking. Before changing code, record expected behaviour, observed behaviour, minimal reproduction, a hypothesis and evidence to inspect. Use a requirement to justify the expectation. Keep the initial hypothesis even if later evidence disproves it.
 
-Response and reason: [complete]
+Response and reason: 
+- Chosen scenario: cancelled-history
+- Expected behaviour: After `appointment_service.cancel_appointment('A1')`, `appointment_service.find_appointment('A1')` returns the same appointment object, now with status CANCELLED. A second cancel is rejected with `ValueError`, and `data_store.find_appointment('A1')` still returns the record.
+
+- Observed behaviour: 
+`find_appointment('A1')` raises `LookupError: Appointment not found` right after the cancel,
+`test_cancel_twice_raises_value_error` fails with the same `LookupError`,
+`test_stage7_cancelled_slot_can_be_rebooked_with_history_retained` shows `store.find_appointment("A1")` returning `None`.
+
+- Minimal reproduction: 
+```
+python
+data_store, appointment_service, appointment = appointment_setup()
+appointment_service.cancel_appointment('A1')
+appointment_service.find_appointment('A1')
+```
+
+Command: python -m pytest -q tests/test_services.py::test_cancelled_appointment_is_retained_in_history
+
+- Hypothesis: `cancel_appointment` removes the appointment from the data store instead of only setting its status to CANCELLED, so later lookups return `None`.
+
+- Evidences: the body of `cancel_appointment` in `smartcare/services.py`. Inspect whether it sets the status to CANCELLED  , or removes the appointment from the database.
 
 ### A.3 Test defect or product defect
 
 A test expects cancelled appointments to be deleted, but FR-07 says history must be retained. What should be changed? Explain why. Also decide whether a test expecting different practitioners at the same time to conflict reflects AC-04.2. Do not assume every failing test is correct.
 
-Response and reason: [complete]
+Response and reason: Change the test that expects deletion, because it contradicts FR-07 (history must be retained). The code’s retain-and-mark-CANCELLED behaviour is the requirement. A test expecting different practitioners at the same time to conflict does not reflect AC-04.2, which defines conflicts per practitioner, so that test should be corrected, not the code.
 
 ### A.4 Refactoring smell hunt
 
 Consider a hypothetical 70-line AppointmentService method containing duplicate status strings, direct collection manipulation, printing, validation and four nested conditionals. Identify the smells and propose small refactorings that preserve required behaviour. The direct collection work replaces the old storage-specific scenario; use the existing SmartCareDataStore boundary. Do not implement an extra architecture.
-Classify these proposed changes as refactoring, repair or feature: rename appt to appointment; extract a repeated conflict helper; add rescheduling; restore retained cancellation lookup; replace a magic status string with the existing enum. Explain the behaviour that must remain unchanged.
 
-Response and reason: [complete]
+Classify these proposed changes as refactoring, repair or feature: rename appt to appointment; extract a repeated conflict helper; add rescheduling; restore retained cancellation lookup; replace a magic status string with the existing enum. 
+
+Explain the behaviour that must remain unchanged.
+
+Response and reason: 
+- Smell and refactorings
++ Duplicate status strings: Replace them with the existing `AppointmentStatus` enum. Stored status values and conflict and cancellation outcomes must stay the same.
++ Direct collection manipulation: Move that behind the existing `SmartCareDataStore` methods such as `find_appointment` and `has_practitioner_conflict`, without adding new architecture. The same records must be stored, found and returned.
++ Printing inside business logic: Remove the `print` or move it to the caller, and rely on return values or exceptions instead. The return value and raised exceptions must not change.
++ Validation mixed with logic: Extract validation into a helper that runs first. The same `ValueError` and `LookupError` types and conditions must apply.
++ Four nested conditionals: Use guard clauses and flatten the conditions. Every input must still take the same path to the same outcome.
+
+- Classifying the proposed changes
++ Rename appt to appointment: refactoring. Only readability changes, with no behaviour change.
++ Extract a repeated conflict helper: refactoring. Same checks and same results, just without duplication.
++ Add rescheduling: feature. It adds new behaviour that did not exist, so it needs new requirements and tests.
++ Restore retained cancellation lookup: repair. Current behaviour violates FR-07, so behaviour does change, to match the requirement.
++ Replace a magic status string with the existing enum: refactoring. Same value with a safer representation. The enum’s value must equal the old string if it is stored or compared externally.
+
+- Behaviour that must remain unchanged:
++ Public method signatures and return values.
++ Which exceptions are raised, with which types, for which inputs: `ValueError` for invalid input, duplicate IDs and conflicts, and `LookupError` for missing participants.
++ Conflict rules from AC-04.2.
++ Cancelled appointments stay stored with status CANCELLED.
++ Tests that currently pass must still pass.
+
 
 ### A.5 Traceback and hypothesis ranking
 
 Using one actual failure, identify its exception/assertion, expected and observed values, test line, application call path and supporting requirement. List three plausible causes and rank them by fit with the available evidence. For each cause, name a check that could distinguish it from the others. Explain why a traceback alone does not establish the cause.
 
-Response and reason: [complete]
+Response and reason:
+
+- Failure chosen: `test_cancelled_appointment_is_retained_in_history`
++ Exception/assertion: `LookupError('Appointment not found')`, raised before `assert` could compare anything.
++ Expected: `find_appointment('A1')` returns the same appointment object, now with status CANCELLED.
++ Observed: `LookupError`. The stage 7 test shows the underlying store returning `None` for `A1` after a cancel.
++ Test line: `tests\test_services.py:147`, `assert appointment_service.find_appointment('A1')` is appointment.
++ Call path: the test calls `cancel_appointment('A1')`, which succeeds. It then calls `AppointmentService.find_appointment('A1')`, which calls `data_store.find_appointment('A1')`. That returns `None`, so `services.py:136` `raises LookupError`.
++ Requirement: FR-07
+
+- Plausible causes
++ `SmartCareDataStore.find_appointment` hides `CANCELLED` records. The first cancel succeeded, so the record existed. The project has no public delete operation, which makes filtering at lookup more likely than deletion.
+   Check: read the store’s find_appointment, then print the store’s internal appointment collection right after the cancel. If 'A1' is still in it, this is the cause.
++ `cancel_appointment` removes the record. This is your original hypothesis, and it fits because the record is gone after the cancel.
+   Check: print the collection before and after the cancel. If 'A1' is absent afterward and was present before, it was removed, which rules out cause 1.
++ The record is still stored, but under a different key. For example, the key was altered or normalised during cancellation. This fits least, because nothing in the output hints at a key change.
+   Check: compare the collection’s keys and its length before and after the cancel. If the length is unchanged but 'A1' is not a key, this is the cause.
+
+- Why a traceback alone doesn’t establish the cause:
++ The faulty step happened earlier, inside the cancel or the store, and that part never appears in the traceback.
 
 ### A.6 Exit question
 
 Why is changing code immediately after seeing a failure often a poor debugging strategy?
 
-Response and reason: [complete]
+Response and reason: Because it might lead to changing the wrong code. For example, the `LookupError` at `line 136` is correct behaviour. Editing that line would hide the problem while the real cause stays.
 
 Classification responses (1–5, each with reason): [complete]
 Tutorial debugging record — expected; observed; reproduction; hypothesis; evidence to inspect: [complete]
@@ -63,8 +126,8 @@ Traceback — exception/assertion; expected/observed values; test line; call pat
 
 ## B. Stage 7 baseline and safe preparation
 
-- Stage 7 code SHA and requirement baseline: [complete]
-- Baseline test command / working directory / observed result / evidence: [complete]
+- Stage 7 code SHA and requirement baseline: 5518a276c258c50d100ba0550af72367599cdf37
+- Baseline test command / working directory / observed result / evidence: `python -m pytest -q`,  `...\st1-assignment-3\project`, result 7 failed, 45 passed in 0.22s. Key failures: the cancelled-history tests and the stage 7 / starter conflict tests.
 - Clean preparation SHA if a record-only commit followed Stage 7: [complete]
 - Branch and preparer / how teammates obtained this branch: [complete]
 - Downloaded tool version, source SHA256 and --check outcome: [complete]
@@ -76,25 +139,32 @@ Traceback — exception/assertion; expected/observed values; test line; call pat
 
 ## C. F8-01 diagnosis and repair
 
-- Symptom / observed behaviour: [complete]
-- Expected behaviour and requirement: [complete]
-- Minimal synthetic reproduction steps: [complete]
-- Meaningful failing test path/name and exact relevant failure: [complete]
+- Symptom / observed behaviour: After cancel_appointment('A1'), find_appointment('A1') raises LookupError: Appointment not found, and the data store’s find_appointment('A1') returns None. The appointment disappears after cancellation.
+- Expected behaviour and requirement: The appointment stays stored with status CANCELLED and can still be found and listed. Requirement: FR-07 (history must be retained). Check the exact wording in your spec.
+- Minimal synthetic reproduction steps: 
++ Create a data store, an `AppointmentService`, and an appointment A1.
++ Call `cancel_appointment('A1')`.
++ Call `find_appointment('A1')`. Expected: the appointment. Observed: `LookupError`.
+- Meaningful failing test path/name and exact relevant failure: 
+`tests/test_services.py::test_cancelled_appointment_is_retained_in_history`, failing at `tests\test_services.py:147` with `LookupError: Appointment not found raised from smartcare\services.py:136.`
 - Human hypothesis and intended checks: see E, F8-01.
-- Supported root cause and inspected code/runtime evidence: [complete after diagnosis]
-- Smallest justified fix / diff / why other behaviour is preserved: [complete]
-- Repair SHA / focused verification result: [complete]
+- Supported root cause and inspected code/runtime evidence: `cancel_appointment` only calls `appointment.cancel()` and does not delete. `SmartCareDataStore.find_appointment` skips appointments whose status is "cancelled", so it returns `None` and the service raises `LookupError`. Evidence: inspected both methods in services.py and data_store.py
+- Smallest justified fix / diff / why other behaviour is preserved: Removed the `status.value != "cancelled"` condition so lookup matches by ID only. Blank IDs still raise `ValueError`, and unknown IDs still return `None`.
+- Repair SHA / focused verification result: `e22c410005c13059fc051685c7067fe21b40ae29`. Focused test `tests/test_services.py::test_cancelled_appointment_is_retained_in_history`: failed before the fix (`LookupError: Appointment not found`), passes after (`1 passed`). Full suite after the fix: `4 failed, 48 passed`. Remaining failures are the separate practitioner-conflict fault, not F8-01.
 
 ## D. F8-02 diagnosis and repair
 
-- Symptom / observed behaviour: [complete]
-- Expected behaviour and requirement: [complete]
-- Minimal synthetic reproduction steps: [complete]
-- Meaningful failing test path/name and exact relevant failure: [complete]
+- Symptom / observed behaviour: Conflict checks are backwards. The same practitioner at the same time is accepted (no ValueError), while a different practitioner at the same time is rejected.
+- Expected behaviour and requirement: A conflict exists only when the same practitioner already has a `SCHEDULED` appointment at that exact time. Different practitioners at the same time are allowed.
+- Minimal synthetic reproduction steps: Book `A1` with `DR1` at 2026-10-01 09:00. Book `A2` with `DR1` at the same time (expected ValueError, observed: accepted). Book `A2` with `DR2` at the same time (expected: accepted, observed: ValueError).
+- Meaningful failing test path/name and exact relevant failure: 
+`tests/test_services.py::test_stage7_different_practitioner_same_time_allowed, line 280, ValueError: Practitioner already has a SCHEDULED appointment at this time from smartcare\services.py:122.`
 - Human hypothesis and intended checks: see E, F8-02.
-- Supported root cause and inspected code/runtime evidence: [complete after diagnosis]
-- Smallest justified fix / diff / why other behaviour is preserved: [complete]
-- Repair SHA / focused verification result: [complete]
+- Supported root cause and inspected code/runtime evidence: `has_practitioner_conflict` in `data_store.py` uses `!=` instead of `==` when comparing practitioner IDs, so it flags other practitioners and misses the same one. Evidence: inspected the method and failing tests at `tests\test_services.py:267` and `:280`
+- Smallest justified fix / diff / why other behaviour is preserved: 
++ Changed one operator in `SmartCareDataStore.has_practitioner_conflict`
++ Other behaviour is preserved because the other conditions are untouched: `exclude_appointment_id` still skips the excluded appointment, the time must still match exactly, and only "scheduled" appointments count, so cancelled slots can still be rebooked. `book_appointment` in `services.py` is unchanged.
+- Repair SHA / focused verification result:
 
 ## E. Human-first hypotheses
 
@@ -102,7 +172,7 @@ Complete both entries BEFORE Copilot. C/D supply observed/expected/reproduction/
 
 ### F8-01 human entry
 
-Likely cause and why plausible: [complete]
+Likely cause and why plausible: `cancel_appointment` removes the appointment from the data store instead of only setting its status to `CANCELLED`. Plausible because the record is gone after the cancel and the test failure is a “not found” error.
 Evidence intended to inspect / competing explanation / discriminating check: [complete]
 Member and saved sequence/time or commit showing this preceded consultation: [complete]
 
