@@ -126,7 +126,7 @@ Traceback — exception/assertion; expected/observed values; test line; call pat
 
 ## B. Stage 7 baseline and safe preparation
 
-- Stage 7 code SHA and requirement baseline: 5518a276c258c50d100ba0550af72367599cdf37
+- Stage 7 code SHA and requirement baseline: SHA 5518a276c258c50d100ba0550af72367599cdf37
 - Baseline test command / working directory / observed result / evidence: `python -m pytest -q`,  `...\st1-assignment-3\project`, result 7 failed, 45 passed in 0.22s. Key failures: the cancelled-history tests and the stage 7 / starter conflict tests.
 - Clean preparation SHA if a record-only commit followed Stage 7: [complete]
 - Branch and preparer / how teammates obtained this branch: [complete]
