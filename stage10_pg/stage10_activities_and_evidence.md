@@ -67,18 +67,62 @@ Why does increasing AI autonomy increase rather than decrease the importance of 
 
 ## C Human task specification before AI
 
-- Goal: [response]
-- Requirements RES-01–06 with RES-05-R2: [response]
-- Out of scope: [response]
-- Architecture constraints: [response]
-- Acceptance criteria: [response]
-- Definition of Done: [response]
-- Issue / PG owner: [response]
-- Human expected positive, negative and boundary tests: [response]
-- Allowed files: [response]
-- Forbidden/unnecessary files and changes: [response]
-- Baseline/recovery link: [response]
-- Evidence that human analysis preceded agent use: [response]
+- Goal: Add an appointment rescheduling feature to the existing SmartCare application.
+- Requirements RES-01–06 with RES-05-R2: Implement RES-01–RES-06, including RES-05-R2. Only scheduled appointments can move to valid available times. Keep the same appointment object, ID and participants. Reject invalid IDs, datetimes, conflicting bookings and cancelled/completed appointments without changing state.
+- Out of scope: Database redesign, persistence, notifications, payments, authentication, external calendar libraries and unrelated changes.
+- Architecture constraints: Add a domain-level rescheduling operation in Appointment and a coordinating method in AppointmentService. Reuse the existing datetime validator and SmartCareDataStore.has_practitioner_conflict() helper.
+- Acceptance criteria: Successful rescheduling preserves identity, rejects conflicts, permits a valid same-time no-op, frees the old slot and updates appointment lookup and practitioner listing.
+- Definition of Done: All specified scenarios have meaningful tests; the existing tests still pass; changes have been independently reviewed; the approved Copilot workflow and human decisions are documented.
+- Issue / PG owner: Sabin Lamichhane (GitHub: Sabin77)
+- Human expected positive, negative and boundary tests: 
+  1. **Successful rescheduling:** A SCHEDULED appointment moves to a free datetime while preserving the same object, ID, patient and practitioner.
+  2. **Unknown ID:** A valid but unknown appointment ID raises `LookupError`.
+  3. **Invalid ID:** Blank or non-string appointment IDs raise `ValueError`.
+  4. **Practitioner conflict:** Another SCHEDULED appointment for the same practitioner at the requested datetime causes `ValueError`.
+  5. **Different practitioner:** An appointment can move to a datetime occupied by a different practitioner.
+  6. **Invalid status:** CANCELLED and COMPLETED appointments cannot be rescheduled, including same-time requests.
+  7. **Same-time no-op:** Rescheduling a SCHEDULED appointment to its existing datetime is allowed.
+  8. **Invalid datetime:** Non-datetime values, timezone-aware datetimes and values with nonzero seconds or microseconds raise `ValueError`.
+  9. **State preservation:** Rejected requests do not modify appointment fields or stored records.
+  10. **Old-slot reuse:** A successful move makes the original slot available for another appointment with the same practitioner.
+  11. **Lookup and listing:** The updated datetime is visible through appointment lookup and sorted practitioner listing.
+- Allowed files:  - `project/smartcare/domain.py` — Add `Appointment.reschedule()`.
+  - `project/smartcare/services.py` — Add `AppointmentService.reschedule_appointment()`.
+  - `project/tests/test_rescheduling.py` — Add meaningful tests.
+  - `project/README.md` — Document the rescheduling feature.
+  - `stage10_pg/stage10_activities_and_evidence.md` — Record implementation and review evidence.
+- Forbidden/unnecessary files and changes: Do not modify unrelated Patient or Practitioner functionality, existing cancellation/history rules or correct previous tests.
+
+  Do not introduce databases, persistence, notifications, payments, authentication, external calendar packages, unnecessary dependencies or unrelated console functionality.
+
+  Any additional file changes must be justified by the requirements and receive human approval.
+- Baseline/recovery link: Repository: https://github.com/Sabin77/st1-assignment-3
+
+  Protected Stage 9 baseline SHA: `b016f8f2c0ad0c7be51c5eed8dea39ba35cadcac`
+
+  Baseline commit: https://github.com/Sabin77/st1-assignment-3/commit/b016f8f2c0ad0c7be51c5eed8dea39ba35cadcac
+
+  Test command: `py -m pytest -q`
+
+  Working directory: `project/`
+
+  Observed result: **52 passed in 0.08 seconds**.
+
+  The `main` branch was up to date with `origin/main`, and the working tree was clean.
+
+  Stage 10 branch: `feature/stage10-rescheduling`.
+
+  The baseline remains recoverable through Git history.
+
+- Evidence that human analysis preceded agent use: Before consulting GitHub Copilot for Stage 10, I reviewed the assignment requirements and confirmed that the existing SmartCare application passed all 52 tests.
+
+  I identified the required rescheduling behaviour, expected positive and negative scenarios, relevant domain and service responsibilities, existing datetime validation and practitioner conflict handling.
+
+  I prepared this Section C specification before requesting the agent's implementation plan.
+
+  The actual Copilot prompt, response, human review decisions and approval will be documented in Section D.
+
+  No agent implementation or approval is claimed at this stage.
 
 ## D Agent plan and approval
 
@@ -86,12 +130,33 @@ Actual plan-only prompt/context and response or confirmed equivalent artefacts: 
 
 | Plan step / action | Requirement link | Reason | Expected files | Accept / Modify / Reject | Conditions / evidence |
 |---|---|---|---|---|---|
-| [response] | [response] | [response] | [response] | [response] | [response] |
+| Add `Appointment.reschedule()` | RES-01, RES-02, RES-06 | Keep datetime validation and state changes within the domain object. | `project/smartcare/domain.py` | Accept | Only SCHEDULED appointments can move. Reuse `validate_date_time`; preserve identity and state on failure. |
+| Add `AppointmentService.reschedule_appointment()` | RES-01–RES-04, RES-06 | Coordinate lookup, status validation and practitioner conflicts before mutation. | `project/smartcare/services.py` | Accept | Reuse `find_appointment()` and `has_practitioner_conflict()` with target ID exclusion. |
+| Add focused rescheduling tests | RES-01–RES-06, RES-05-R2 | Verify positive, negative and boundary scenarios independently. | `project/tests/test_rescheduling.py` | Accept | Check meaningful results, identity, conflicts, invalid inputs, state preservation, old-slot reuse and listing order. |
+| Document PG rescheduling | Stage 10 documentation | Explain the new feature and its session-only limitations. | `project/README.md` | Accept | Do not claim persistence or unverified results. |
+| Complete Stage 10 evidence | Stage 10 Sections D–K | Record actual planning, implementation, verification and review evidence. | `stage10_pg/stage10_activities_and_evidence.md` | Accept | Record only actual Copilot activity, test results, commits, reviews and human decisions. |
 
-Approved bounded scope / forbidden changes / verification plan: [response]
-Human plan approver and approval before edits: [actual evidence]
-Tool permissions and any expanded-scope requests / decision: [response]
+**Actual plan-only prompt/context and response:**
+GitHub Copilot Stage 10 planning interaction, reviewed before implementation.
+The saved prompt and response are retained as planning evidence.
 
+**Approved bounded scope:**
+Only `domain.py`, `services.py`, `test_rescheduling.py` and the PG README note may be changed by the agent. The Stage 10 evidence record is maintained by the human PG member.
+
+**Forbidden changes:**
+No databases, persistence, new dependencies, notifications, unrelated Patient/Practitioner changes, cancellation changes, weakened tests or console extensions.
+
+**Verification plan:**
+Run focused rescheduling tests, the independent existing suite and the cumulative full suite. Review the actual production diff and test diff separately.
+
+**Human plan approver:**
+Sabin Lamichhane (PG owner).
+
+**Human approval before edits:**
+To be recorded when I explicitly approve implementation through the approved Copilot interface.
+
+**Tool permissions and expanded-scope requests:**
+Plan-only interaction completed without file edits or command execution, as reported by Copilot. Actual IDE mode and tool permissions require confirmation. Any expanded scope requires separate approval.
 ## E Production diff review
 
 Actual proposal / branch diff / version reviewed: [links]
