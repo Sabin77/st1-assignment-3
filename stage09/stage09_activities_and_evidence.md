@@ -6,7 +6,7 @@ Group: Tuesday 1:30 PM
 
 Members and responsibilities: Nhat Minh Le
 
-Stage 8 integrated SHA, command, working directory and actual result: <!-- complete -->
+Stage 8 integrated SHA, command, working directory and actual result: SHA `53a219d` (`finalised stage 8`); command `git --no-pager log --oneline --decorate -n 8`; working directory `...\GitHub\st1-assignment-3`; actual result: the repo history shows stage 8 was finalised in commit `53a219d`, and the current branch remains `feature/stage9-queries` with the stage 8 record included.
 
 ## A. Tutorial activities
 
