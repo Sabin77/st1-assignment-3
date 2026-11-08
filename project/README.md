@@ -18,3 +18,25 @@ The demo registers synthetic records and books/finds an appointment. All supplie
 Stage 6 TODOs: service patient/practitioner lookup and cancellation. Stage 9 TODOs: pure query, named sort key, service listing and interactive menu. The starter TODO contracts are in docstrings. All three Stage 6 TODO calls deliberately raise NotImplementedError; future TODOs remain stubs. No PG rescheduling or assurance solution is supplied.
 
 Service booking accepts IDs and a `datetime` (local, minute precision). Console parser accepts exactly `YYYY-MM-DD HH:MM`. Store lookups return None when absent; service lookups raise LookupError. Invalid values, duplicates, conflicts and illegal transitions raise ValueError. Lists are new containers holding the stored objects. No age, duration, patient-conflict or past-date rules apply.
+
+
+## Stage 10 — PG Appointment Rescheduling
+
+SmartCare supports guarded appointment rescheduling within the current in-memory session.
+
+- Only SCHEDULED appointments can be rescheduled.
+- The appointment ID, patient and practitioner objects remain unchanged.
+- Invalid appointment IDs and datetime values are rejected.
+- Conflicting SCHEDULED appointments for the same practitioner are blocked.
+- A valid same-time reschedule is allowed.
+- CANCELLED and COMPLETED appointments cannot be rescheduled.
+- Successful rescheduling releases the original time slot.
+- Appointment lookup and sorted practitioner listing show the updated time immediately.
+
+The feature does not provide database or restart persistence.
+
+Verification from `project/`:
+
+- Focused rescheduling tests: 19 passed.
+- Existing tests independently: 52 passed.
+- Full suite: 71 passed.

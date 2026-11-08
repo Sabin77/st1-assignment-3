@@ -163,43 +163,65 @@ Actual proposal / branch diff / version reviewed: [links]
 
 | File | Change purpose and reason | Requirement / test link | Expected? | Architecture OK? | Decision | Notes / correction |
 |---|---|---|---|---|---|---|
-| [response] | [response] | [response] | [response] | [response] | [response] | [response] |
+| `project/smartcare/domain.py` | Add `Appointment.reschedule()` with status and datetime validation before mutation. | RES-01, RES-02, RES-06 | Yes | Yes | Accept | Changes only `_date_time`; retains the original object and participants. |
+| `project/smartcare/services.py` | Add rescheduling workflow, lookup, conflict checking and return of the existing appointment. | RES-01–RES-04, RES-06 | Yes | Yes | Accept | Reuses `validate_date_time()` and `has_practitioner_conflict()` with target exclusion. |
+| `project/README.md` | Document supported rescheduling behaviour and session-only limitation. | Stage 10 documentation | Yes | Yes | Accept after README update | Confirm that the new feature note is saved. |
+| `project/tests/test_rescheduling.py` | Add positive, negative and boundary tests for rescheduling. | RES-01–RES-06, RES-05-R2 | Yes | Yes | Accept | 19 tests passed; reviewed separately in Section F. |
+| `stage10_pg/stage10_activities_and_evidence.md` | Document actual planning, correction, verification and review evidence. | Stage 10 evidence | Yes | Yes | In progress | Preserve the supplied template and record only verified activities. |
 
-Every changed file inspected, including new/untracked files: [evidence]
-Unexpected changes, scope creep, secrets/dependencies/configuration, unrelated cleanup: [response or none with evidence]
+Every changed file inspected, including new/untracked files:
+Reviewed the local production diffs for `domain.py` and `services.py`, the new `test_rescheduling.py`, and the README diff. The README required a further documentation update. The Stage 10 evidence record remains under completion.
+
+Unexpected changes, scope creep, secrets/dependencies/configuration, unrelated cleanup:
+No unrelated production or dependency changes identified in the reviewed diff. The earlier incorrect Copilot commit was reverted. `git diff --check` reported only Windows LF/CRLF conversion warnings.
 
 ## F Separate test review
 
 | Test | Criterion | Actual assertion | Assertion meaningful / adequate? | Agent changed expected behaviour? | Human or agent authorship | Decision and reason |
 |---|---|---|---|---|---|---|
-| [response] | [response] | [response] | [response] | [response] | [response] | [response] |
+| `test_successful_reschedule_preserves_identity` | RES-01, RES-02 | Same appointment object, patient, practitioner and ID; updated datetime. | Yes | No | Manually added after rejected agent proposal | Accept |
+| `test_unknown_appointment_raises_lookup_error` | RES-03 | Unknown ID raises `LookupError`; existing time remains unchanged. | Yes | No | Manual | Accept |
+| `test_invalid_appointment_id` | RES-03 | Invalid IDs raise `ValueError`; original time is preserved. | Yes | No | Manual | Accept |
+| `test_same_practitioner_conflict_rejected` | RES-04 | Conflict raises `ValueError`; appointment times and store contents remain unchanged. | Yes | No | Manual | Accept |
+| `test_different_practitioner_same_time_allowed` | AC-RES-04 | Rescheduling succeeds when the existing booking belongs to another practitioner. | Yes | No | Manual | Accept |
+| `test_cancelled_appointment_cannot_reschedule` | RES-06 | CANCELLED status rejects moves and same-time requests without mutation. | Yes | No | Manual | Accept |
+| `test_completed_appointment_cannot_reschedule` | RES-06 | Actual COMPLETED appointment rejects moves and retains its stored identity and datetime. | Yes | No | Manual correction of previous agent test defect | Accept |
+| `test_same_time_no_op` | Self-exclusion | Same-time request succeeds and retains the original appointment. | Yes | No | Manual | Accept |
+| `test_invalid_datetime_rejected` | Date/time validation | Invalid types, seconds, microseconds and timezone-aware datetimes raise `ValueError`. | Yes | No | Manual correction of previous agent test defect | Accept |
+| `test_successful_move_frees_original_slot` | Old-slot reuse | Another appointment can be booked into the released slot. | Yes | No | Manual | Accept |
+| `test_lookup_and_listing_show_updated_order` | RES-05-R2 | Lookup shows the updated time; practitioner listing is correctly reordered. | Yes | No | Manual | Accept |
+| `test_domain_rejects_invalid_status_and_time` | Domain invariants | Invalid time and illegal status are rejected without changing the appointment time. | Yes | No | Manual | Accept |
 
-Comparison with original common tests / any proposed weakening: [response]
-Independent human checks and corrections: [response]
+Comparison with original common tests / any proposed weakening:
+The original 52 tests were retained unchanged and passed independently. No previous assertions were weakened to accommodate the new feature.
+
+Independent human checks and corrections:
+The earlier Copilot proposal contained an invalid COMPLETED-state test and an incorrect timezone-aware datetime example. These were identified during review. The corrected manually added tests construct an actual COMPLETED appointment and use `timezone.utc` for the timezone-aware case. The resulting 19 focused tests passed independently.
 
 ## G Actual verification
 
 | Requirement / acceptance scenario | Test or demonstration | Meaningful expected result | Actual result | Evidence / version |
 |---|---|---|---|---|
-| RES-01 / AC-RES-01 successful move | [response] | [response] | [response] | [response] |
-| RES-02 same object and participant identities | [response] | [response] | [response] | [response] |
-| RES-03 / AC-RES-02 unknown and invalid IDs | [response] | [response] | [response] | [response] |
-| RES-04 / AC-RES-03 conflicting practitioner | [response] | [response] | [response] | [response] |
-| AC-RES-04 different practitioner allowed | [response] | [response] | [response] | [response] |
-| RES-06 / AC-RES-05 cancelled and completed | [response] | [response] | [response] | [response] |
-| RES-05-R2 / AC-RES-06-R2 lookup and listing order | [response] | [response] | [response] | [response] |
-| Self-exclusion and same-time no-op | [response] | [response] | [response] | [response] |
-| Invalid datetime and failed-state snapshots | [response] | [response] | [response] | [response] |
-| Successful old-slot reuse | [response] | [response] | [response] | [response] |
+| RES-01 / AC-RES-01 successful move | `test_successful_reschedule_preserves_identity` | A SCHEDULED appointment moves to a valid free time. | Passed | Local `test_rescheduling.py` |
+| RES-02 same object and participant identities | `test_successful_reschedule_preserves_identity` | The appointment object, ID, patient and practitioner remain unchanged. | Passed | Local `test_rescheduling.py` |
+| RES-03 / AC-RES-02 unknown and invalid IDs | `test_unknown_appointment_raises_lookup_error`; `test_invalid_appointment_id` | Unknown IDs raise `LookupError`; blank and invalid IDs raise `ValueError`. | Passed | Local `test_rescheduling.py` |
+| RES-04 / AC-RES-03 conflicting practitioner | `test_same_practitioner_conflict_rejected` | A conflicting SCHEDULED appointment for the same practitioner blocks the move without mutation. | Passed | Local `test_rescheduling.py` |
+| AC-RES-04 different practitioner allowed | `test_different_practitioner_same_time_allowed` | An appointment with another practitioner at the requested time does not block rescheduling. | Passed | Local `test_rescheduling.py` |
+| RES-06 / AC-RES-05 cancelled and completed | `test_cancelled_appointment_cannot_reschedule`; `test_completed_appointment_cannot_reschedule` | CANCELLED and COMPLETED appointments cannot move, including same-time attempts. | Passed | Local `test_rescheduling.py` |
+| RES-05-R2 / AC-RES-06-R2 lookup and listing order | `test_lookup_and_listing_show_updated_order` | Lookup and practitioner listing show the new time and correct order in the current session. | Passed | Local `test_rescheduling.py` |
+| Self-exclusion and same-time no-op | `test_same_time_no_op` | A SCHEDULED appointment can retain its own existing time without creating a conflict. | Passed | Local `test_rescheduling.py` |
+| Invalid datetime and failed-state snapshots | `test_invalid_datetime_rejected`; `test_domain_rejects_invalid_status_and_time`; `test_same_practitioner_conflict_rejected` | Invalid values raise `ValueError`, and rejected operations preserve the appointment's existing state. | Passed | Local `test_rescheduling.py` |
+| Successful old-slot reuse | `test_successful_move_frees_original_slot` | The original appointment slot becomes available after a successful move. | Passed | Local `test_rescheduling.py` |
 
 | Suite | Command / working directory | Code SHA | Actual count and result | Evidence |
 |---|---|---|---|---|
-| Focused PG | [response] | [response] | [response] | [response] |
-| Common independently | [response] | [response] | [response] | [response] |
-| Full cumulative | [response] | [response] | [response] | [response] |
-| Integrated retest | [response] | [response] | [response] | [response] |
+| Focused PG | `py -m pytest -q tests/test_rescheduling.py` from `project/` | Local uncommitted changes after `82d81e5` | 19 passed in 0.06s | PyCharm terminal output |
+| Common independently | `py -m pytest -q --ignore=tests/test_rescheduling.py` from `project/` | Local uncommitted changes after `82d81e5` | 52 passed in 0.07s | PyCharm terminal output |
+| Full cumulative | `py -m pytest -q` from `project/` | Local uncommitted changes after `82d81e5` | 71 passed in 0.23s | PyCharm terminal output |
+| Integrated retest | Pending after reviewed PR merge | Pending | Not yet performed | Awaiting integrated verification |
 
-Failures / diagnosis / corrections and reruns / unresolved concerns: [response]
+Failures / diagnosis / corrections and reruns / unresolved concerns:
+The recovered Stage 9 baseline passed 52 tests. The corrected local Stage 10 implementation passed 19 focused tests, all 52 existing tests independently, and 71 cumulative tests. The earlier Copilot-generated commit `e36ee41` was rejected and reverted in `82d81e5` after incorrect file changes and test defects were identified. Independent PR review, integrated merge and post-merge retesting are still pending.
 
 ## H Decisions corrections and independent review
 
