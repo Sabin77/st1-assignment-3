@@ -6,7 +6,8 @@ All Assignment 3 stage materials are provided from the beginning. Complete this 
 
 Group/tutorial: Tuesday 1:30 PM
 Members and UG/PG cohorts: Stanley Campbell, Shaban Mohseni,Nhat Minh Le,Sabin Lamichhane
-Record owner / contribution links for each member: Stanley Campbell — Stage 6 service architecture and repository owner; Shaban Mohseni — Stage 8 defect diagnosis and repair; Nhat Minh Le — Stage 7 baseline verification and Stage 8 evidence owner; Sabin Lamichhane — shared repo setup, review and handover.
+
+Record owner / contribution links for each member: Stanley Campbell — Stage 6; Shaban Mohseni — Stage 12; Nhat Minh Le — Stage 8 and 9; Sabin Lamichhane — Stage 7, 10, 11.
 
 Use concise results and accessible artefact links rather than copying entire logs. Keep human-first entries before consulting GitHub Copilot. Link shared evidence once; do not repeat it across sections. No entries below are specimen answers or claimed results.
 
