@@ -1,20 +1,219 @@
-# SmartCare Stage 6 starter
+"""Simple workflows using a shared SmartCareDataStore object."""
 
-Requirements baseline: SmartCare A3 2026 revision 2. Python 3.13 and pytest 8.3.5 verified. Runtime uses only the standard library.
 
-From this directory, using a Python environment with the development dependency installed:
+from datetime import datetime
 
-```sh
-python main.py
-python -m pytest
-```
+from smartcare.data_store import SmartCareDataStore
+from smartcare.domain import (
+    Appointment,
+    AppointmentStatus,
+    Patient,
+    Practitioner,
+    validate_date_time,
+)
+from smartcare.queries import select_appointments
 
-If needed in your approved environment: `python -m pip install -r requirements-dev.txt`.
 
-The demo registers synthetic records and books/finds an appointment. All supplied tests pass. Data exists only in this session and is lost on exit; FR-10 restart persistence is retired. Use synthetic information only.
+class PatientService:
+    """Coordinate patient registration and lookup through the shared store."""
 
-`domain.py` contains the entities, status and guarded cancellation. `data_store.py` holds three dictionaries through add/find/list methods. The three services share that object. Supplied registration, booking, appointment lookup and conflict checking work. IDs are trimmed, non-blank and case-sensitive. Properties provide read-only identity/appointment state; changes go through domain methods. No special architecture terminology is required.
+    def __init__(self, data_store: SmartCareDataStore) -> None:
+        """Use the shared store to coordinate patient operations."""
+        self.data_store = data_store
 
-Stage 6 TODOs: service patient/practitioner lookup and cancellation. Stage 9 TODOs: pure query, named sort key, service listing and interactive menu. The starter TODO contracts are in docstrings. All three Stage 6 TODO calls deliberately raise NotImplementedError; future TODOs remain stubs. No PG rescheduling or assurance solution is supplied.
+    def register_patient(self, patient_id: str, name: str) -> Patient:
+        """Validate and register a patient, returning the stored object.
 
-Service booking accepts IDs and a `datetime` (local, minute precision). Console parser accepts exactly `YYYY-MM-DD HH:MM`. Store lookups return None when absent; service lookups raise LookupError. Invalid values, duplicates, conflicts and illegal transitions raise ValueError. Lists are new containers holding the stored objects. No age, duration, patient-conflict or past-date rules apply.
+        Raise ValueError for invalid fields or an existing patient ID.
+        """
+        patient = Patient(patient_id, name)
+        self.data_store.add_patient(patient)
+        return patient
+
+    def find_patient(self, patient_id: str) -> Patient:
+        """Return the stored patient for a valid patient ID.
+
+        Raise LookupError for absence and ValueError for
+        a blank/invalid ID. It must not create a replacement patient.
+        """
+        patient = self.data_store.find_patient(patient_id)
+        if patient is None:
+            raise LookupError('Patient not found')
+        return patient
+
+
+class PractitionerService:
+    """Coordinate practitioner registration and lookup through the shared
+    store.
+    """
+
+    def __init__(self, data_store: SmartCareDataStore) -> None:
+        """Use the shared store to coordinate practitioner operations."""
+        self.data_store = data_store
+
+    def register_practitioner(
+        self,
+        practitioner_id: str,
+        name: str,
+        specialty: str,
+    ) -> Practitioner:
+        """Validate and register a practitioner, returning the stored
+        object.
+
+        Raise ValueError for invalid fields or an existing practitioner
+        ID.
+        """
+        practitioner = Practitioner(practitioner_id, name, specialty)
+        self.data_store.add_practitioner(practitioner)
+        return practitioner
+
+    def find_practitioner(self, practitioner_id: str) -> Practitioner:
+        """Return the stored practitioner for a valid ID.
+
+        Raise LookupError for absence and ValueError for
+        a blank/invalid ID. It must not create a replacement
+        practitioner.
+        """
+        practitioner = self.data_store.find_practitioner(practitioner_id)
+        if practitioner is None:
+            raise LookupError('Practitioner not found')
+        return practitioner
+
+
+class AppointmentService:
+    """Coordinate booking, lookup, cancellation and rescheduling."""
+
+    def __init__(self, data_store: SmartCareDataStore) -> None:
+        """Use the shared store to coordinate appointment operations."""
+        self.data_store = data_store
+
+    def book_appointment(
+        self,
+        appointment_id: str,
+        patient_id: str,
+        practitioner_id: str,
+        date_time: datetime,
+    ) -> Appointment:
+        """Book registered participant IDs and return the stored
+        appointment.
+
+        Raise LookupError for absent participants. Raise ValueError for
+        invalid values, duplicate appointment IDs or a practitioner
+        conflict.
+        """
+        patient = self.data_store.find_patient(patient_id)
+        practitioner = self.data_store.find_practitioner(practitioner_id)
+        if patient is None:
+            raise LookupError('Patient not found')
+        if practitioner is None:
+            raise LookupError('Practitioner not found')
+        appointment = Appointment(
+            appointment_id,
+            patient,
+            practitioner,
+            date_time,
+        )
+        if self.data_store.find_appointment(
+            appointment.appointment_id,
+        ) is not None:
+            raise ValueError('Appointment ID already exists')
+        if self.data_store.has_practitioner_conflict(
+            practitioner.practitioner_id,
+            date_time,
+        ):
+            raise ValueError(
+                'Practitioner already has a SCHEDULED appointment at this time',
+            )
+        self.data_store.add_appointment(appointment)
+        return appointment
+
+    def find_appointment(self, appointment_id: str) -> Appointment:
+        """Return the stored appointment; raise LookupError when absent.
+
+        Reject a blank or invalid ID with ValueError; do not create
+        records.
+        """
+        appointment = self.data_store.find_appointment(appointment_id)
+        if appointment is None:
+            raise LookupError('Appointment not found')
+        return appointment
+
+    def cancel_appointment(self, appointment_id: str) -> Appointment:
+        """Cancel through the domain method and retain the
+        appointment.
+
+        Return the cancelled object. Unknown IDs raise LookupError;
+        invalid transitions raise ValueError and leave state unchanged.
+        """
+        appointment = self.find_appointment(appointment_id)
+        appointment.cancel()
+        return appointment
+
+    def reschedule_appointment(
+        self,
+        appointment_id: str,
+        new_date_time: datetime,
+    ) -> Appointment:
+        """Reschedule a scheduled appointment to a valid available time.
+
+        Return the same stored appointment object after the update. Unknown
+        IDs raise LookupError, blank or invalid IDs raise ValueError, and
+        rejected changes leave the object and store unchanged.
+        """
+        appointment = self.find_appointment(appointment_id)
+        validated = validate_date_time(new_date_time)
+
+        if appointment.status is not AppointmentStatus.SCHEDULED:
+            raise ValueError('Only SCHEDULED appointments may be rescheduled')
+
+        if self.data_store.has_practitioner_conflict(
+            appointment.practitioner.practitioner_id,
+            validated,
+            exclude_appointment_id=appointment.appointment_id,
+        ):
+            raise ValueError(
+                'Practitioner already has a SCHEDULED appointment at this time',
+            )
+
+        appointment.reschedule(validated)
+        return appointment
+
+    def list_practitioner_appointments(
+        self,
+        practitioner_id: str,
+        status: AppointmentStatus | None = None,
+    ) -> list[Appointment]:
+        """Stage 9: new ordered list; default includes every status.
+
+        Unknown practitioner raises LookupError, invalid status
+        ValueError; a known practitioner with no matches returns an
+        empty list.
+        """
+        if not isinstance(practitioner_id, str):
+            raise ValueError('Practitioner ID must be a string')
+        if status is not None and not isinstance(status, AppointmentStatus):
+            raise ValueError('Status must be an AppointmentStatus value or None')
+
+        practitioner = self.data_store.find_practitioner(practitioner_id)
+        if practitioner is None:
+            raise LookupError('Practitioner not found')
+
+        return select_appointments(
+            self.data_store.list_appointments(),
+            practitioner.practitioner_id,
+            status,
+        )
+
+
+},{"content":"""Stage 10 PG rescheduling note.
+
+The in-memory SmartCare application now supports guarded appointment
+rescheduling without persistence. `Appointment.reschedule()` and
+`AppointmentService.reschedule_appointment()` allow only a currently
+SCHEDULED appointment to move to a valid minute-precision datetime, reject
+invalid IDs and invalid local times, and block same-practitioner conflicts
+at the exact requested time while excluding the target appointment from the
+conflict check. Successful moves preserve the same object identity and the
+same patient/practitioner references, while the current session immediately
+reflects the updated appointment time in lookup and practitioner listing.
+"""
