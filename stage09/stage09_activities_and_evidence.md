@@ -4,7 +4,7 @@ Common UG and PG record. All Assignment 3 stage materials are provided from the 
 
 Group: Tuesday 1:30 PM
 
-Members and responsibilities: Nhat Minh Le
+Members and responsibilities: Stanley Campbell — Stage 6; Shaban Mohseni — Stage 12; Nhat Minh Le — Stage 8 and 9; Sabin Lamichhane — Stage 7, 10, 11.
 
 Stage 8 integrated SHA, command, working directory and actual result: SHA `53a219d` (`finalised stage 8`); command `git --no-pager log --oneline --decorate -n 8`; working directory `...\GitHub\st1-assignment-3`; actual result: the repo history shows stage 8 was finalised in commit `53a219d`, and the current branch remains `feature/stage9-queries` with the stage 8 record included.
 
