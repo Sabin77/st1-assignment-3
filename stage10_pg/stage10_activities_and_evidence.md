@@ -276,8 +276,7 @@ The earlier Copilot proposal contained an invalid COMPLETED-state test and an in
 | Focused PG | `py -m pytest -q tests/test_rescheduling.py` from `project/` | Local uncommitted changes after `82d81e5` | 19 passed in 0.06s | PyCharm terminal output |
 | Common independently | `py -m pytest -q --ignore=tests/test_rescheduling.py` from `project/` | Local uncommitted changes after `82d81e5` | 52 passed in 0.07s | PyCharm terminal output |
 | Full cumulative | `py -m pytest -q` from `project/` | Local uncommitted changes after `82d81e5` | 71 passed in 0.23s | PyCharm terminal output |
-| Integrated retest | Pending post-merge execution from `project/` | Pending integrated SHA | Not yet performed | PR #18 awaiting integration |
-
+| Integrated retest | `py -m pytest -q` from `project/` | `91b6dba334715653b806cc18f41fffe4fffeb246` | 71 passed in 0.12s | Local integrated main verification |
 Failures / diagnosis / corrections and reruns / unresolved concerns:
 The original common suite passed 52 tests. After the corrected Stage 10 implementation, the focused PG suite passed 19 tests, the existing tests independently passed 52 tests, and the cumulative suite passed 71 tests.
 
@@ -321,8 +320,7 @@ Review link: https://github.com/Sabin77/st1-assignment-3/pull/18
 
 Corrections, recheck and actual approval before integration: Stanley's independent approval was recorded on 9 November 2026. The requested documentation corrections are being applied before integration. Any required renewed review must be obtained after the correction commit.
 
-Integrated PG SHA / common protected SHA: Integrated PG SHA pending PR #18 merge. Protected Stage 9 integrated SHA: `46209c7a443de4520972c610e0a06831cea40886`.
-
+Integrated PG SHA / common protected SHA: Stage 10 integrated SHA `91b6dba334715653b806cc18f41fffe4fffeb246`. Protected Stage 9 SHA `46209c7a443de4520972c610e0a06831cea40886`.
 Each assessed PG member's implementation, supervision and test contribution: Sabin Lamichhane prepared the requirements specification, reviewed Copilot's plan, identified defective agent changes, performed Git recovery, implemented the corrected rescheduling methods, added and ran tests, inspected changes and documented evidence.
 
 Optional UG help, acknowledged separately: Stanley Campbell independently reviewed PR #18 and verified 71 tests.
