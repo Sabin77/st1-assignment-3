@@ -12,6 +12,8 @@ from smartcare.services import (
     PatientService,
     PractitionerService,
 )
+from unittest.mock import patch
+from smartcare.console import run_menu
 
 
 def make_assurance_setup():
@@ -111,3 +113,12 @@ def test_failed_reschedule_preserves_listing_and_store_state():
     )
     assert before_state == after_state
     assert after_listing == (first, second, third)
+
+def test_menu_handles_eof_during_operation(capsys):
+    """Closing input during registration must exit gracefully."""
+    with patch("builtins.input", side_effect=["1", EOFError]):
+        run_menu()
+
+    output = capsys.readouterr().out
+    assert "Input closed; exiting." in output
+    assert "Traceback" not in output
