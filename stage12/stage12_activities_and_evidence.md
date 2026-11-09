@@ -202,7 +202,7 @@ Secrets/staff material/caches/tool-metadata exclusion check: [o .env, __pycache_
 Candidate recovery plan / known-good SHA: [known-good common 46209c7, PG 87f1f87; recover with git checkout <sha> or git revert of the release commit.]
 
 
-Named substantive contributions: [From Git history: Stanley Campbell (23 commits; Stage 6 issues/PRs, PR #18 review), Sabin Lamichhane (21 commits; Stage 7, Stage 10, Stage 11 branch), Nhat Minh Le (minhleee5/Nhat, 22 commits; Stage 8–9, PR #13/#17 merges), Shaban Mohseni (AceOfSpade-Py,  commits; Stage 12 owner).]
+Named substantive contributions: [From Git history: Stanley Campbell (25 commits; Stage 6 issues/PRs, PR #18 review), Sabin Lamichhane (15 commits; Stage 7, Stage 10, Stage 11 branch), Nhat Minh Le (minhleee5/Nhat, 15 commits; Stage 8–9, PR #13/#17 merges), Shaban Mohseni (AceOfSpade-Py,11 commits; Stage 12 owner).]
 
 
 ## J Human release decision
