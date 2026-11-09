@@ -24,18 +24,18 @@ Tutorial activity 2 and actual readiness matrix. Add exact requirement/acceptanc
 
 | Release claim / requirement / scope | Evidence | Location/link and SHA | Reviewer | Sufficient? | Gap/action |
 |---|---|---|---|---|---|
-| Cancellation history works | [response] | [response] | [response] | [response] | [response] |
-| Architecture responsibilities are appropriate | [response] | [response] | [response] | [response] | [response] |
-| Rescheduling is safe — PG only | [response] | [response] | [response] | [response] | [response] |
-| AI use is responsible — common recheck / PG assurance | [response] | [response] | [response] | [response] | [response] |
-| System is maintainable | [response] | [response] | [response] | [response] | [response] |
-| FR-01–03 register/find and validation | [response] | [response] | [response] | [response] | [response] |
-| FR-04–05 booking/conflict rules | [response] | [response] | [response] | [response] | [response] |
-| FR-06–08 cancellation/history/find | [response] | [response] | [response] | [response] | [response] |
-| FR-09 and QRY/FP listing/filter/order/purity | [response] | [response] | [response] | [response] | [response] |
-| UI full console sequence and error recovery | [response] | [response] | [response] | [response] | [response] |
-| Session-only scope / FR-10 retired | [response] | [response] | [response] | [response] | [response] |
-| PG RES and assurance integration | [response] | [response] | [response] | [response] | [response] |
+| Cancellation history works | [test_cancelled_appointment_is_retained_in_history, test_stage7_cancelled_slot_can_be_rebooked_with_history_retained] | [test_services.py, RC] | [Shaban Mohseni/ Team to Confirm] | [Yes] | [None] |
+| Architecture responsibilities are appropriate | [Code review E; domain / store / services / queries / console separation] | [smartcare/, RC] | [[Shaban Mohseni/ Team to Confirm] | [Yes] | [Store lookups made consistent (H-1)] |
+| Rescheduling is safe — PG only | [19 tests in test_rescheduling.py (identity, conflict, status, no-op, slot release, ordering)] | [RC] | [Stanley Campbell reviewed PR #18 (Stage 10 record)] | [Yes for RES-01–06] | [Not in console menu] |
+| AI use is responsible — common recheck / PG assurance | [Copilot decisions in Stage 6–10 records; Stage 11 not integrated] | [stage06/–stage10_pg/] | [Shaban Mohseni/ Team to Confirm] | [Partialy] | [Stage 11 assurance must be integrated and recorded for PG] |
+| System is maintainable | [Docstrings, type hints, enum use, README structure] | [RC] | [Team to Confrim] | [Yes after H-1/H-2] | [None] |
+| FR-01–03 register/find and validation | [test_domain.py field tests; test_find_patient_*, test_find_practitioner_*, duplicate tests] | [RC] | [Team to Confirm] | [Yes] | [None] |
+| FR-04–05 booking/conflict rules | [test_stage7_same_practitioner_exact_time_conflict_preserves_store, test_stage7_different_practitioner_same_time_allowed, test_stage7_same_practitioner_different_minute_allowed] | [test_services.py, RC] | [Team to Confirm] | [Yes] | [None] |
+| FR-06–08 cancellation/history/find | [test_cancel_* (6 tests), retained-history tests] | [test_services.py, RC] | [Team to Confirm] | [Yes] | [None] |
+| FR-09 and QRY/FP listing/filter/order/purity | [select_appointments / appointment_sort_key pure query; test_lookup_and_listing_show_updated_order; demo listing steps] | [queries.py, RC] | [Team to Confirm] | [Partly] | [No dedicated unit test of query purity in the current suite; covered by demo and service tests] |
+| UI full console sequence and error recovery | [Scripted run of python main.py --interactive] | [stage12/demo_console_transcript.txt] | [Team to Confirm] | [Yes] | [Console has no automated test (limitation)] |
+| Session-only scope / FR-10 retired | [In-memory dicts only; README limitations; demo prints session-only notice] | [data_store.py, project/README.md, RC] | [Team to Confirm] | [Yes] | [None] |
+| PG RES and assurance integration | [RES tests pass in full suite; assurance tests pass when added but are unmerged] | [RC; origin/feature/stage11-assurance 922bee4] | [Team to COnfirm] | [No (assurance)] | [Integrate and record Stage 11 before PG release] |
 
 
 ## C Full regression results
