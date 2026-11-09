@@ -58,24 +58,26 @@ Remaining failure / limitation: [no failing tests. The console menu is checked b
 
 | Demo step | Synthetic setup/input | Expected requirement | Observed result | Evidence/link |
 |---|---|---|---|---|
-| Problem and stakeholders | [response] | [response] | [response] | [response] |
-| Register and find Patient and two Practitioners | [response] | [response] | [response] | [response] |
-| Valid booking | [response] | [response] | [response] | [response] |
-| Same practitioner exact-time conflict rejected | [response] | [response] | [response] | [response] |
-| Different practitioner same time allowed | [response] | [response] | [response] | [response] |
-| Cancel SCHEDULED and retain/find CANCELLED object | [response] | [response] | [response] | [response] |
-| Invalid/repeated cancellation rejected | [response] | [response] | [response] | [response] |
-| Default all-status listing | [response] | [response] | [response] | [response] |
-| Explicit filtering / empty vs unknown / deterministic order | [response] | [response] | [response] | [response] |
-| Invalid date/status/menu/lookup recovery and continued operation | [response] | [response] | [response] | [response] |
-| Session-only limitation and normal exit | [response] | [response] | [response] | [response] |
-| One meaningful requirement-linked pytest test explained | [response] | [response] | [response] | [response] |
-| Architecture and one actual AI decision / known limitation | [response] | [response] | [response] | [response] |
-| PG reschedule identity/participants/time and no-op | [response] | [response] | [response] | [response] |
-| PG conflict/invalid status/failure non-mutation | [response] | [response] | [response] | [response] |
-| PG old slot / current lookup/list ordering / assurance risks | [response] | [response] | [response] | [response] |
-Stable demo owner / fresh process / command: [response]
-PG demonstrations through service/tests or not applicable: [response]
+| Problem and stakeholders | [Clinic reception staff booking practitioners for patients; patients and practitioners as affected parties] | [Overview problem statement] | [Explained verbally] | [Viva] |
+| Register and find Patient and two Practitioners | [P1 Alex Example; DR1 Taylor Example (General practice); DR2 Jordan Example (Physiotherapy)] | [FR-01–03] | [Registered and found P1 and DR2] | [Transcript lines 1–5] |
+| Valid booking | [A1, P1, DR1, 2026-10-01 09:00] | [FR-04] | [Booked: A1 … scheduled] | [Transcript line 6] |
+| Same practitioner exact-time conflict rejected | [A2, P1, DR1, 2026-10-01 09:00] | [FR-05, AC-04.2] | [Error: Practitioner already has a SCHEDULED appointment at this time] | [Line 7] |
+| Different practitioner same time allowed | [A3, P1, DR2, 2026-10-01 09:00] | [AC-04.2] | [Booked: A3 … DR2 … scheduled] | [Line 8] |
+| Cancel SCHEDULED and retain/find CANCELLED object | [Cancel A1, then list DR1 (all)] | [FR-06, FR-07] | [Cancelled: A1 … cancelled; A1 still listed as cancelled] | [Lines 10, 13–14, 22–23] |
+| Invalid/repeated cancellation rejected | [Cancel A1 again; cancel ZZ] | [FR-06] | [Only SCHEDULED appointments may be cancelled; Appointment not found] | [Lines 11–12] |
+| Default all-status listing | [DR1, blank status] | [FR-09] | [A4 (08:00) then A1 (09:00, cancelled)] | [Lines 13–14] |
+| Explicit filtering / empty vs unknown / deterministic order | [DR1 cancelled; DR2 completed; DRX all] | [FR-09, QRY] | [Only A1; No appointments found.; Practitioner not found; ordered by time then ID] | [Lines 15–17] |
+| Invalid date/status/menu/lookup recovery and continued operation | [Status pending; date 2026-13-01 09:00; patient NOPE; menu 9] | [UI recovery] | [Clear error each time; the menu continued and a later listing worked] | [Lines 18–23] |
+| Session-only limitation and normal exit | [Option 8; python main.py demo] | [FR-10 retired] | [Session ended.; demo prints Session-only data: records are lost on exit.] | [Line 24; demo run] |
+| One meaningful requirement-linked pytest test explained | [test_stage7_cancelled_slot_can_be_rebooked_with_history_retained] | [FR-07, AC-04.2] | [Asserts that the cancelled A1 remains in the store as CANCELLED and that its slot can be rebooked; this would fail if cancellation deleted A1 (F8-01) or if the conflict rule counted cancelled appointments] | [test_services.py:347] |
+| Architecture and one actual AI decision / known limitation | [Domain/store/service/query layers; Stage 10 Copilot commit e36ee41 reverted (82d81e5) and reimplemented manually] | [Responsible AI] | [Decision recorded in the Stage 10 record] | [stage10_pg/] |
+| PG reschedule identity/participants/time and no-op | [Service-level tests] | [RES-01–03] | [Passing: test_successful_reschedule_preserves_identity, test_same_time_no_op] | [test_rescheduling.py] |
+| PG conflict/invalid status/failure non-mutation | [Service-level tests] | [RES-04–05] | [Passing: test_same_practitioner_conflict_rejected, test_cancelled_…, test_completed_appointment_cannot_reschedule, test_invalid_datetime_rejected] | [test_rescheduling.py] |
+| PG old slot / current lookup/list ordering / assurance risks | [Service-level tests] | [RES-06, RES-05-R2] | [Passing: test_successful_move_frees_original_slot, test_lookup_and_listing_show_updated_order; assurance tests not yet merged] | [test_rescheduling.py] |
+
+Stable demo owner / fresh process / command: [Requires team confirmation; fresh process, python main.py --interactive from project/. ]
+
+PG demonstrations through service/tests or not applicable: [through the service and tests/test_rescheduling.py, because rescheduling is not in the menu.]
 
 
 ## E Final code quality and AI review
