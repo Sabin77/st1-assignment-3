@@ -84,49 +84,70 @@ PG demonstrations through service/tests or not applicable: [through the service 
 
 | Review area | Code/evidence location | Finding or no finding | Correction/no change and recheck |
 |---|---|---|---|
-| OOP responsibilities and pure-query boundaries | [response] | [response] | [response] |
-| PascalCase and snake_case naming | [response] | [response] | [response] |
-| Useful type hints and meaningful docstrings | [response] | [response] | [response] |
-| Four-space indentation and imports/layout | [response] | [response] | [response] |
-| Focused methods / duplication / dead or commented code | [response] | [response] | [response] |
-| Globals / leakage / unnecessary inheritance or frameworks | [response] | [response] | [response] |
-| No SQLite/persistence/repository ABCs/speculative features | [response] | [response] | [response] |
-| Synthetic data / secrets / dependencies / provenance | [response] | [response] | [response] |
-| Significant common Copilot contributions and human verification | [response] | [response] | [response] |
-| PG plan/diff/test approvals and Stage 11 VERIFY/TRUST | [response] | [response] | [response] |
+| OOP responsibilities and pure-query boundaries | [domain.py, services.py, queries.py] | [No finding. The domain guards transitions, services coordinate, and the query returns a new sorted list without mutation or I/O] | [No change] |
+| PascalCase and snake_case naming | [All modules] | [No finding] | [No change] |
+| Useful type hints and meaningful docstrings | [data_store.py find_appointment, has_practitioner_conflict] | [Both lacked docstrings after the Stage 8 repairs] | [Docstrings added (H-1); 71 passed] |
+| Four-space indentation and imports/layout | [main.py] | [Missing two blank lines before if __name__; stale docstring ("intentionally incomplete" menu)] | [Corrected (H-3)] |
+| Focused methods / duplication / dead or commented code | [data_store.py] | [find_appointment used a linear scan and duplicated the blank-ID check, unlike the other find methods; conflict check used the magic string "scheduled"] | [Changed to a dict lookup with required_text and AppointmentStatus.SCHEDULED (H-1)] |
+| Globals / leakage / unnecessary inheritance or frameworks | [All modules] | [No globals or inheritance; there is one known minor duplication: the status guard appears in both Appointment.reschedule and the service] | [Accepted as debt (G)] |
+| No SQLite/persistence/repository ABCs/speculative features | [smartcare/] | [No finding; standard library only] | [No change] |
+| Synthetic data / secrets / dependencies / provenance | [Repository tree, requirements-dev.txt] | [Only synthetic names and no secrets. The only dependency is pytest==8.3.5. .idea/ IDE metadata was tracked] | [.idea/ untracked and ignored (H-4)] |
+| Significant common Copilot contributions and human verification | [Stage 6–9 records] | [Recorded per stage; Copilot review comparisons are in the Stage 6 record] | [No new AI-generated code in Stage 12] |
+| PG plan/diff/test approvals and Stage 11 VERIFY/TRUST | [Stage 10 record; Stage 11 record] | [Stage 10 records an unapproved Copilot commit that was reverted. The Stage 11 VERIFY/TRUST record is blank on main] | [PG release blocked until Stage 11 is completed (J)] |
 
 | AI claim | Affected requirement/code | Human check | Accept/Modify/Reject and reason | Actual outcome/action or no change |
 |---|---|---|---|---|
-| [response] | [response] | [response] | [response] | [response] |
-Access route or approved equivalent / limitations: [response]
-Available AI evidence and missing evidence honestly disclosed: [response]
+| [Stage 10 Copilot implementation (e36ee41) presented as ready] | [RES-01–06; services.py, domain.py] | [Diff review against RES requirements and the approval workflow (Stage 10 record)] | [Rejected: committed before approval and incomplete] | [Reverted in 82d81e5; manual reimplementation 1d18d19; 19 RES tests pass] |
+
+- Any suggestions used during the stage 12 review; none were used for the corrections in H, but team confirmation is required. 
+
+Access route or approved equivalent / limitations: [GitHub Copilot]
+
+Available AI evidence and missing evidence honestly disclosed: [the available evidence is the Copilot decisions in the Stage 6 and Stage 10 records and commits e36ee41/82d81e5., Though links or references to saved copilot prompts/outputs are not in the repository.]
 
 
 ## F README and reproducibility check
 
 | README item | Location | Verifier | Result/gap |
 |---|---|---|---|
-| Purpose and included common/PG scope | [response] | [response] | [response] |
-| Out-of-scope capabilities and known limitations | [response] | [response] | [response] |
-| Confirmed teaching Python version and dependency installation | [response] | [response] | [response] |
-| Working directory / demo / interactive / test commands | [response] | [response] | [response] |
-| Repository structure and architecture responsibilities | [response] | [response] | [response] |
-| Responsible AI summary / synthetic-data rule | [response] | [response] | [response] |
-| Release label/version and SHA links | [response] | [response] | [response] |
-Root README index and project/README verified: [response]
-Fresh clone or extracted ZIP / candidate identity: [response]
-Verifier and clean environment / actual version: [response]
-Setup/run/test commands and observed results: [response]
-Missing local file or setup gap / remedy and recheck: [response]
+| Purpose and included common/PG scope | [project/README.md › intro, Included scope] | [Shaban Mohseni; Requires team confirmation] | [Rewritten; it previously described the Stage 6 starter TODOs] |
+| Out-of-scope capabilities and known limitations | [Out of scope and known limitations] | [Shaban Mohseni; Requires team confirmation] | [Added] |
+| Confirmed teaching Python version and dependency installation | [Setup] | [Shaban Mohseni; Requires team confirmation] | [Present (Python 3.13, pytest 8.3.5, pip install -r requirements-dev.txt)] |
+| Working directory / demo / interactive / test commands | [Setup] | [Shaban Mohseni; Requires team confirmation] | [--interactive was previously undocumented; added] |
+| Repository structure and architecture responsibilities | [Structure and responsibilities] | [Shaban Mohseni; Requires team confirmation] | [Updated to include queries.py and the PG tests] |
+| Responsible AI summary / synthetic-data rule | [Responsible AI and data] | [Shaban Mohseni; Requires team confirmation] | [Added] |
+| Release label/version and SHA links | [project/README.md header; root README group index] | [Shaban Mohseni; Requires team confirmation] | [Label added; root index completed with the tested SHA] |
+
+Root README index and project/README verified: [links to project/README.md and all stage records resolve to existing files. The group index has been completed.]
+
+
+Fresh clone or extracted ZIP / candidate identity: [a fresh clone of main was tested at 87f1f87; the git archive ZIP of the candidate was extracted and tested (K).]
+
+
+Verifier and clean environment / actual version: [he check ran on a clean Linux VM with Python 3.11.17 and pytest 8.3.5. ; verification on Python 3.13.]
+
+
+Setup/run/test commands and observed results: [pip install pytest==8.3.5 succeeded; python main.py printed the A1 demo line and the session-only notice; python -m pytest -q returned 71 passed]
+
+
+Missing local file or setup gap / remedy and recheck: [the project README was outdated (remedied, H-2). No missing files were found.]
 
 
 ## G Known limitations debt and release notes
 
-Delivered features: [response]
-Important fixes: [response]
-Architecture/quality improvements: [response]
-Known limitations: [response]
-AI-assisted development note: [response]
+Delivered features: [patient/practitioner registration and lookup; booking with the practitioner exact-time conflict rule; cancellation with retained history; ordered, filterable practitioner listing; interactive menu; PG guarded rescheduling.]
+
+
+Important fixes: [F8-01, cancelled appointments hidden by store lookup (code fix 74e7011; e22c410, cited in the Stage 8 record, changes only that record), integrated via PR #13; F8-02, reversed practitioner comparison in the conflict check (42b858c, PR #13). Both are confirmed present in the RC code and covered by the passing Stage 7 tests.]
+
+
+Architecture/quality improvements: [store lookups made consistent with enum-based status checks; README rewritten; IDE metadata removed from version control.]
+
+
+Known limitations: [in-memory session only; no menu option for rescheduling or direct appointment lookup; naive local minute-precision times; no durations.]
+
+
+AI-assisted development note: [Copilot was used for review comparisons and the Stage 10 plan/proposal. The Stage 10 Copilot commit was rejected and reverted; all accepted code was human-reviewed and verified by tests.]
 
 | Debt item | Impact | Priority | Future action | Accepted? / release rationale |
 |---|---|---|---|---|
