@@ -9,10 +9,20 @@ Members and UG/PG applicability: [Stanley Campbell (UG), Shaban Mohseni (UG), Nh
 ## A Release scope and starting SHA
 
 Release label/version and requirements baseline: [SmartCare A3 Stage 12 RC1]
+
+
 Common starting SHA / branch / applicable members: [46209c7a443de4520972c610e0a06831cea40886,(Merge of PR #17, Stage 9) on main; All four members. Re-run at this SHA: 52 Passed]
+
+
 PG starting SHA / branch / applicable members or not applicable: [87f1f87386aea7e539492a4c57a4a82b351a65ed (main, Stage 10 integrated via PR #18); Sabin Lamichhane. Stage 11 assurance tests exist only on origin/feature/stage11-assurance (922bee4, adds project/tests/test_assurance.py).
+
+
 Working-state review and approved integration: [Main was cloned clean (no uncommitted changes). Release corrections were made on release/stage12 from 87f1f87, requires team conformation to integrate release/stage12 into main.]
+
+
 Protected common candidate and PG differences: [The common behaviour is unchanged from 46209c7; PG adds Appointment.reschedule, AppointmentService.reschedule_appointment, tests/test_rescheduling.py (19 tests) and the README section. The 52 common tests pass on both the common SHA and the release candidate.]
+
+
 Feature freeze / owner / verifier: [freeze at 87f1f87; after it only release corrections (no new behaviour). Owner Shaban Mohseni. It is required per team to confirm verifier name and freeze date.]
 
 
