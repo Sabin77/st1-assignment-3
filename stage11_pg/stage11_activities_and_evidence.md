@@ -173,7 +173,7 @@ For each of at least TWO new/materially strengthened tests, explain the earlier 
 | Previous PG independently | `py -m pytest -q tests/test_rescheduling.py` from `project/` | `922bee4` | 19 passed in 0.03s | PyCharm terminal output |
 | Common independently | `py -m pytest -q --ignore=tests/test_rescheduling.py --ignore=tests/test_assurance.py` from `project/` | `922bee4` | 52 passed in 0.06s | PyCharm terminal output |
 | Full PG cumulative | `py -m pytest -q` from `project/` | `922bee4` | 73 passed in 0.08s | PyCharm terminal output |
-| Integrated retest | Pending Stage 11 PR approval and merge | Pending | Not yet performed | Pending integration |
+| Integrated retest | `py -m pytest -q` from `project/` | `8ef5b2456a4acec1eb906e07d09314fda77fe5c6` | 106 passed in 0.29s | Post-merge verification on `main`; PR #21 merged |
 
 
 Confirmed defect / minimal correction / before-after evidence:
@@ -318,24 +318,20 @@ Responsible PG member: Sabin Lamichhane. Any additional course-policy or approve
 
 ## I Independent review and final audit statement
 
-Human reviewer / PR or diff link / feedback: **Pending.** Stage 10 was independently reviewed by Stanley Campbell on PR #18, but this is not a Stage 11 approval. The Stage 11 branch has been pushed and must receive its own human review. No Stage 11 review feedback is claimed.
+Human reviewer / PR or diff link / feedback:
+Stanley Campbell (`s-campbell-dev`) independently reviewed Stage 11 PR #21 and approved the final implementation commit `e83b9d8`. He ran the full test suite and confirmed 74 tests passed. His review covered the EOF correction, three assurance tests and Stage 11 evidence document.
+Review: https://github.com/Sabin77/st1-assignment-3/pull/21
 
-Corrections and recheck / approval before integration: Copilot identified an unhandled EOF case. I reproduced it using a patched input sequence, corrected the `run_menu()` operation-level handler, and added a third test. Local follow-up verification returned 3 assurance tests passed and 74 cumulative tests passed. Review of the final committed diff and reviewer approval are pending.
+Corrections and recheck / approval before integration:
+The original EOF defect was reproduced, corrected and regression-tested. Stanley approved the final Stage 11 PR. After merging, I ran `py -m pytest -q` from `project/` on the integrated main branch and obtained 106 passed in 0.29s.
 
-Overall decision: **Acceptable with remediation for the synthetic-data teaching scope; not yet approved for integration.** Three local assurance tests and the full regression suite passed. A privacy limitation, provenance gaps and outstanding independent review remain; the software is not suitable for real clinical data.
+Accountable reviewer and PG member sign-off:
+PG owner: Sabin Lamichhane.
+Independent human reviewer: Stanley Campbell (`s-campbell-dev`), APPROVED on PR #21.
 
-Unresolved risks: Console output can disclose patient names and identifiers if real records are entered; a comprehensive secrets/licence review was not performed; current scope excludes duration, timezone conversion, patient conflicts, accessibility guarantees and persistent storage. Stage 11 Copilot chat provenance and exact approval-mode reference are incomplete.
-
-Evidence supporting decision: Stage 9 protected SHA `46209c7`; Stage 10 merge SHA `91b6dba`; Stage 11 starting SHA `87f1f87`; first two tests committed in `922bee4`; focused results of 2 passed then 3 passed; earlier 19 previous PG and 52 common separately passed; full suite 73 then 74 passed; reproducible EOF defect before the correction; static import/privacy audit; human verification of Copilot's read-only findings.
-
-Remediation owner / action / status: Sabin Lamichhane — EOF correction and third test locally verified; complete evidence, commit/push final changes, obtain independent PR review, merge only after approval and rerun tests from integrated `main`.
-
-Residual limitations and conditions of acceptance: Accept only for synthetic teaching data and current in-memory architecture. Do not treat passing tests as proof of privacy, security or fitness for clinical use. Confirm approval and final integrated test results before marking Stage 11 fully complete.
-
-Accountable reviewer and PG member sign-off: PG owner — Sabin Lamichhane (responsible for implementation, verification and evidence). Independent Stage 11 reviewer — pending; no reviewer sign-off claimed.
-
-Integrated PG SHA / protected common SHA: Stage 11 integration **pending**. Last verified Stage 10 integrated SHA: `91b6dba334715653b806cc18f41fffe4fffeb246`. Protected common Stage 9 SHA: `46209c7a443de4520972c610e0a06831cea40886`.
-
+Integrated PG SHA / protected common SHA:
+Stage 11 integrated SHA: `8ef5b2456a4acec1eb906e07d09314fda77fe5c6`.
+Protected Stage 9 common SHA: `46209c7a443de4520972c610e0a06831cea40886`.
 
 ## J Reflections
 
@@ -379,16 +375,16 @@ Integrated PG SHA / protected common SHA: Stage 11 integration **pending**. Last
 - [x] Earlier assertions retained; common and previous PG suites passed independently before the EOF correction, and full cumulative suite passed after it.
 - [x] Copilot claims independently checked; accept/modify/reject decisions and limitations recorded honestly.
 - [x] Dependency/provenance/privacy review and residual limitations recorded, including unresolved provenance details.
-- [ ] Independent Stage 11 human review, integration and post-merge retest recorded.
+- [x] Independent Stage 11 human review, integration and post-merge retest recorded.
 - [x] All three reflections and ten formative responses answered.
-- [ ] Final accountable reviewer approval and Stage 11 integrated handover completed.
+- [x] Final accountable reviewer approval and Stage 11 integrated handover completed.
 
 Unresolved issues / owner / handover action: Sabin Lamichhane must commit and push the latest EOF correction and evidence, request a new independent Stage 11 PR review, address feedback, merge only with valid approval and rerun the full suite on `main`. The original Copilot audit transcript should be saved if available. No approval or integration is invented.
 
 Tested code SHA / command / working directory / observed result: Before the EOF correction, Stage 11 test commit `922bee48b61d83db77abcc470fd8a8ca9a5f3bfc` was based on 87f1f87; the user reported `py -m pytest -q tests/test_assurance.py` (2 passed in 0.03s), separate Stage 10 tests (19 passed in 0.03s), separate common tests (52 passed in 0.06s), and full suite (73 passed in 0.08s), all from `project/`. After the local EOF correction and third test, `py -m pytest -q tests/test_assurance.py` returned 3 passed in 0.12s and `py -m pytest -q` returned 74 passed in 0.13s. The SHA containing the latest edits is not yet confirmed.
 
-Final submitted SHA / later evidence-only change explanation: **Pending.** Record the actual submitted SHA after committing the final changes; if evidence-only corrections follow, distinguish the later document commit from the independently tested code SHA.
-
-Stage 12 handover links to same project/tests/assurance conclusion and limitations: Repository https://github.com/Sabin77/st1-assignment-3 ; initial Stage 11 test commit https://github.com/Sabin77/st1-assignment-3/commit/922bee48b61d83db77abcc470fd8a8ca9a5f3bfc ; Stage 10 PR https://github.com/Sabin77/st1-assignment-3/pull/18 . Stage 11 PR link pending. The Stage 12 team should work from the final reviewed and integrated Stage 11 SHA only, preserve the protected Stage 9 pathway and 74-test suite (or the actual integrated count), and note the synthetic-data and provenance limits.
+Final submitted SHA / later evidence-only change explanation:
+The verified Stage 11 integration SHA was `8ef5b2456a4acec1eb906e07d09314fda77fe5c6`. The integrated suite passed 106 tests in 0.29s. Any subsequent documentation-only commit must be recorded separately as the final submitted SHA.
+Stage 12 handover links to same project/tests/assurance conclusion and limitations: Repository https://github.com/Sabin77/st1-assignment-3 ; initial Stage 11 test commit https://github.com/Sabin77/st1-assignment-3/commit/922bee48b61d83db77abcc470fd8a8ca9a5f3bfc ; Stage 10 PR https://github.com/Sabin77/st1-assignment-3/pull/18 . Stage 11 PR https://github.com/Sabin77/st1-assignment-3/pull/21. The Stage 12 team should work from the final reviewed and integrated Stage 11 SHA only, preserve the protected Stage 9 pathway and 74-test suite (or the actual integrated count), and note the synthetic-data and provenance limits.
 
 Begin Stage 12 after the previous applicable stage is integrated, verified and recorded. Its handout and blank record are already supplied.
