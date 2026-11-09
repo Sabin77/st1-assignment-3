@@ -2,23 +2,23 @@
 
 BLANK student response template. Supplied from the beginning in stage12/ in your EXISTING repository; complete it only when you reach Stage 12 after the previous applicable stage is integrated, verified and recorded; preserve project/, tests, earlier records and Git history. UG/common and PG/extended scope must be explicit. Use concise results and versioned links, not copied logs or source. No staff answers or fabricated approvals.
 
-Group/tutorial: [response]
-Members and UG/PG applicability: [response]
+Group/tutorial: [Tuesday 1:30 PM]
+Members and UG/PG applicability: [Stanley Campbell (UG), Shaban Mohseni (UG), Nhat Minh Le (UG), Sabin Lamichhane (PG)]
 
 
 ## A Release scope and starting SHA
 
-Release label/version and requirements baseline: [response]
-Common starting SHA / branch / applicable members: [response]
-PG starting SHA / branch / applicable members or not applicable: [response]
-Working-state review and approved integration: [response]
-Protected common candidate and PG differences: [response]
-Feature freeze / owner / verifier: [response]
+Release label/version and requirements baseline: [SmartCare A3 Stage 12 RC1]
+Common starting SHA / branch / applicable members: [46209c7a443de4520972c610e0a06831cea40886,(Merge of PR #17, Stage 9) on main; All four members. Re-run at this SHA: 52 Passed]
+PG starting SHA / branch / applicable members or not applicable: [87f1f87386aea7e539492a4c57a4a82b351a65ed (main, Stage 10 integrated via PR #18); Sabin Lamichhane. Stage 11 assurance tests exist only on origin/feature/stage11-assurance (922bee4, adds project/tests/test_assurance.py).
+Working-state review and approved integration: [Main was cloned clean (no uncommitted changes). Release corrections were made on release/stage12 from 87f1f87, requires team conformation to integrate release/stage12 into main.]
+Protected common candidate and PG differences: [The common behaviour is unchanged from 46209c7; PG adds Appointment.reschedule, AppointmentService.reschedule_appointment, tests/test_rescheduling.py (19 tests) and the README section. The 52 common tests pass on both the common SHA and the release candidate.]
+Feature freeze / owner / verifier: [freeze at 87f1f87; after it only release corrections (no new behaviour). Owner Shaban Mohseni. It is required per team to confirm verifier name and freeze date.]
 
 
 ## B Requirements and release readiness matrix
 
-Tutorial activity 1: All tests pass, README setup is incomplete, one dependency is unreviewed and a known limitation is undocumented. Decide Release / Release with conditions / Do not release and justify: [response]
+Tutorial activity 1: All tests pass, README setup is incomplete, one dependency is unreviewed and a known limitation is undocumented. Decide Release / Release with conditions / Do not release and justify: [Do not release (yet). Passing tests show only that the tested behaviour works. A user cannot reproduce the setup, an unreviewed dependency is an unassessed supply-chain risk, and an undocumented limitation misleads users. All three are quick to fix; once the README is completed, the dependency is reviewed (or removed) and the limitation documented, the candidate can be re-assessed for release with documented limitations.]
 
 Tutorial activity 2 and actual readiness matrix. Add exact requirement/acceptance IDs, evidence and reviewer; distinguish common/PG applicability.
 
