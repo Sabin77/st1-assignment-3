@@ -151,51 +151,97 @@ AI-assisted development note: [Copilot was used for review comparisons and the S
 
 | Debt item | Impact | Priority | Future action | Accepted? / release rationale |
 |---|---|---|---|---|
-| [response] | [response] | [response] | [response] | [response] |
-Session-only synthetic data and minute-precision local time: [response]
-Production auth/roles, portal, notifications, billing/insurance, clinical AI exclusions: [response]
-Scale/concurrency, timezone policy, operations/monitoring, accessibility/usability limitations: [response]
-Difference between accepted scope limit and unresolved required behaviour: [response]
-PG assurance residual risks / owner / status or not applicable: [response]
+| [] | [PG feature usable only via the service] | [Medium] | [Add a menu option and a console test] | [Accepted; not required by RES scope] |
+
+
+Session-only synthetic data and minute-precision local time: [accepted scope limits (FR-10 retired; validate_date_time rejects seconds and time zones]
+
+
+Production auth/roles, portal, notifications, billing/insurance, clinical AI exclusions: [out of scope and excluded.]
+
+
+Scale/concurrency, timezone policy, operations/monitoring, accessibility/usability limitations: [single-user console, no time-zone policy, no monitoring, plain-text interface without an accessibility review.]
+
+
+Difference between accepted scope limit and unresolved required behaviour: [a scope limit (such as no persistence) was agreed and documented; unresolved required behaviour would be a failing requirement. None was found for the common scope; the PG Stage 11 assurance is unfinished required work.]
+
+
+PG assurance residual risks / owner / status or not applicable: [Stage 11 not integrated; owner Sabin Lamichhane; status open.]
 
 
 ## H Release findings and corrective action
 
 | Requirement/claim | Reproduction/observation | Impact/severity | Owner/action | Corrective diff | Focused/full recheck | Residual limit |
 |---|---|---|---|---|---|---|
-| [response] | [response] | [response] | [response] | [response] | [response] | [response] |
-Justified no-change conclusion if no defect found: [response]
-Release blockers still open / status: [response]
+| [response] | [find_appointment scanned a list and repeated blank-ID validation; has_practitioner_conflict compared status.value == "scheduled"; neither had docstrings] | [Low; risk of drift from the enum] | [Release owner; refactor without behaviour change] | [data_store.py: dict .get(required_text(...)); any(...) with AppointmentStatus.SCHEDULED; docstrings] | [Same error message confirmed for '', spaces, None, 5; focused 46 passed; full 71 passed (842de68)] | [None] |
+
+
+Justified no-change conclusion if no defect found: [no functional defect was found in the common or PG behaviour; all corrections are structural or documentation-only, and no test was modified.]
+
+
+Release blockers still open / status: [1- Stage 11 PG assurance not integrated or recorded (PG only). 2- Independent human review and merge of release/stage12 pending.]
 
 
 ## I Git review and integration evidence
 
-Issue / PR / diff links and reviewed SHA: [response]
-Independent reviewer / feedback / response: [response]
-Integration commit / full recheck: [response]
-Tracked and untracked file inspection / cleanliness: [response]
-Secrets/staff material/caches/tool-metadata exclusion check: [response]
-Candidate recovery plan / known-good SHA: [response]
-Named substantive contributions: [response]
+Issue / PR / diff links and reviewed SHA: [earlier integrations: PR #13 (Stage 8), #16/#17 (Stage 9), #18 (Stage 10). Stage 12 diff: 87f1f87..842de68 on branch release/stage12.]
+
+
+Independent reviewer / feedback / response: [Requires Team Consultation]
+
+
+Integration commit / full recheck: [merge SHA on main; rerun python -m pytest -q (expected 71 passed for the common + PG suite)]]
+
+
+Tracked and untracked file inspection / cleanliness: [git status was clean after the commit; tracked files are the root README, .gitignore, project/ and the stage folders only.]
+
+
+Secrets/staff material/caches/tool-metadata exclusion check: [o .env, __pycache__, .pyc, Stage 8 utility or recovery folders are tracked; .idea/ was removed (H-4).]
+
+
+Candidate recovery plan / known-good SHA: [known-good common 46209c7, PG 87f1f87; recover with git checkout <sha> or git revert of the release commit.]
+
+
+Named substantive contributions: [From Git history: Stanley Campbell (23 commits; Stage 6 issues/PRs, PR #18 review), Sabin Lamichhane (21 commits; Stage 7, Stage 10, Stage 11 branch), Nhat Minh Le (minhleee5/Nhat, 22 commits; Stage 8–9, PR #13/#17 merges), Shaban Mohseni (AceOfSpade-Py,  commits; Stage 12 owner).]
 
 
 ## J Human release decision
 
-Decision — READY FOR COURSE RELEASE / READY WITH DOCUMENTED LIMITATIONS / NOT YET READY: [response]
-Approver / date / rationale and evidence: [response]
-What risks remain / conditions / owners: [response]
-Can the team explain the system: [response]
-Can a change be recovered: [response]
-Common decision / PG decision where different: [response]
+Decision — READY FOR COURSE RELEASE / READY WITH DOCUMENTED LIMITATIONS / NOT YET READY: [READY WITH DOCUMENTED LIMITATIONS (common) and NOT YET READY (PG) until Stage 11 is integrated, Stage 11 is yet to be compeleted and final review requires team confirmation]
+
+
+Approver / date / rationale and evidence: [approver and date.] Rationale: all 71 tests pass, the demo meets every common requirement, and the limitations are documented; the PG assurance evidence is incomplete.]
+
+
+What risks remain / conditions / owners: [Stage 11 integration (Sabin Lamichhane); Python 3.13 verification and PR review of release/stage12, to which requires team confirmation]
+
+
+Can the team explain the system: [Yes]
+
+
+Can a change be recovered: [yes; known-good SHAs and the recovery commands are in I.]
+
+
+Common decision / PG decision where different: [common release with limitations; PG held.]
 
 
 ## K Final tested release SHA
 
-Exact common tested SHA: [response]
-Exact PG tested SHA or not applicable: [response]
-Final submitted SHA / repository URL: [response]
-Evidence-only later commit and difference explanation: [response]
-Executable changes after testing and re-verification: [response]
+Exact common tested SHA: [842de684735dea316765edb567ec10103c1a6a3a (common tests: 52 passed); protected Stage 9 common SHA 46209c7 (52 passed).]
+
+
+Exact PG tested SHA or not applicable: [842de684735dea316765edb567ec10103c1a6a3a (71 passed). This excludes the unmerged Stage 11 tests.]
+
+
+Final submitted SHA / repository URL: [[response](https://github.com/Sabin77/st1-assignment-3), team to confirm: SHA on main after merging and the evidence-only commit]
+
+
+Evidence-only later commit and difference explanation: [the commit that adds this record, stage12/demo_console_transcript.txt and the root README index changes only Markdown/text, not executable code.]
+
+
+Executable changes after testing and re-verification: [none after ( When you make changes, and no change is required after ( place the latest Verification Here(  ) ]
+
+
 Source ZIP name / SHA correspondence / extracted comparison: [response]
 
 
@@ -216,69 +262,93 @@ Source ZIP name / SHA correspondence / extracted comparison: [response]
 - [ ] Mixed-group common protection and candidate upload routing checked.
 - [ ] Group reflection, confidential individual peer forms and common team viva routed separately.
 
-Confirmed assessment item/upload route: [response]
+Confirmed assessment item/upload route: [Require team confirmation]
+
+
 Deadline/timezone: [response]
+
+
 Repository access arrangement: [response]
+
+
 Mixed-candidate upload arrangement: [response]
+
+
 Oral/video recording/accessibility arrangements: [response]
+
+
 Remaining administration or release dependency: [response]
 
 
 ## M Formative questions
 
-1. What is a release candidate? [response]
+1. What is a release candidate? [A specific, identified version (an exact SHA) that is believed to be releasable and is tested and reviewed as a whole before the release decision.]
 
-2. What is feature freeze and why is it used? [response]
+2. What is feature freeze and why is it used? [A point after which no new features are added and only corrections are allowed. It stabilises the candidate so that testing and review evidence remain valid.]
 
-3. What is regression testing in a release context? [response]
+3. What is regression testing in a release context? [Rerunning the complete accumulated suite on the exact candidate to confirm that previously working behaviour, including earlier repairs, still works after the final changes.]
 
-4. What is a known limitation? [response]
+4. What is a known limitation? [A documented gap or constraint in the released software that users should know about, such as session-only data.]
 
-5. What is technical debt? [response]
+5. What is technical debt? [Structural or quality shortcuts that work now but make future change harder or riskier. It is recorded with its impact and a planned action.]
 
-6. What are release notes? [response]
+6. What are release notes? [A concise summary for users and maintainers of what the release delivers, fixes, improves and does not do.]
 
-7. What is software maintenance? [response]
+7. What is software maintenance? [Changing software after release to correct defects, adapt to new conditions, or improve structure and behaviour while preserving what already works.]
 
-8. What is the purpose of the individual demonstration/viva? [response]
+8. What is the purpose of the individual demonstration/viva? [To confirm that each member understands the system and their own contribution, and can explain and justify decisions independently of AI.]
 
-9. What should the final responsible-AI check establish before release? [response]
+9. What should the final responsible-AI check establish before release? [That significant AI contributions are identified, verified by humans against requirements and tests, and free of invented requirements, unreviewed dependencies, secrets or real data, with any limitations disclosed.]
 
-10. What is the main course conclusion about AI and the role of the software engineer? [response]
+10. What is the main course conclusion about AI and the role of the software engineer? [AI can accelerate work, but its output is a hypothesis. The engineer remains responsible for requirements, verification, design judgement and the release decision.]
 
 
 ## N Reflection viva and handover
 
-Strongest evidence SmartCare is ready: [response]
-Weakest area: [response]
-How AI use changed from Stage 1 to Stage 12: [response]
-Start doing — engineering and AI use: [response]
-Stop doing — engineering and AI use: [response]
-Continue doing — engineering and AI use: [response]
-What worked / caused rework / future delivery improvement: [response]
-One paragraph — If AI can write code why do we still need software engineers: [response]
+Strongest evidence SmartCare is ready: [71 requirement-linked tests pass on the exact candidate, and the scripted console run demonstrates every common requirement, including error recovery.]
+
+
+Weakest area: [Waiting for stage 11 to be completed]
+
+
+How AI use changed from Stage 1 to Stage 12: [Major Uses were remained the same]
+
+
+Start doing — engineering and AI use: [record Copilot prompts and outputs at the time they are used; add console tests.]
+
+
+Stop doing — engineering and AI use: [granting an assistant write/commit access before a plan is approved;]
+
+
+Continue doing — engineering and AI use: [human-first hypotheses, small reviewed PRs and full-suite reruns before merging.]
+
+
+What worked / caused rework / future delivery improvement: [Stage 7 regression tests caught both F8 defects; rework came from the unapproved Copilot commit and stale documentation. Updating the README with each feature would prevent the second problem.]
+
+
+One paragraph — If AI can write code why do we still need software engineers: [in SmartCare, AI could produce plausible code quickly, but it could not decide that cancelled appointments must be retained (FR-07), notice that a conflict check compared the wrong practitioner, or judge that a commit made before approval should be reverted. Those decisions came from requirements, tests and accountable human review. Engineers define the problem, verify behaviour against evidence, manage risk and take responsibility for the release; AI is a fast assistant inside that process, best explaination is its not a replacement for it.]
 
 | Preparation item | Own explanation and evidence link |
 |---|---|
-| Problem and stakeholders | [response] |
-| Two requirements and acceptance criteria | [response] |
-| Domain model and architecture | [response] |
-| Design trade-off | [response] |
-| Meaningful test and its limits / 100 percent coverage | [response] |
-| Diagnosed defect and verification | [response] |
-| Shared store and session-state/query responsibilities | [response] |
-| What would break if session-state lookup/query responsibilities changed? | [response] |
-| Why cancellation is domain behaviour / conflict coordination is service behaviour | [response] |
-| FR-07 retained history test | [response] |
-| Actual AI change rejected/modified or honestly accepted with verification | [response] |
-| Unresolved limitation / future production work | [response] |
-| Personal implementation contribution | [response] |
-| Personal test/review/design/integration contribution | [response] |
+| Problem and stakeholders | [Clinic staff need conflict-free appointment booking with retained history; patients and practitioners are affected (Stage 6 record).] |
+| Two requirements and acceptance criteria | [FR-05/AC-04.2: conflicts only for the same practitioner at the exact time. FR-07: cancelled appointments are retained as CANCELLED.] |
+| Domain model and architecture | [Patient, Practitioner, Appointment, AppointmentStatus; one shared SmartCareDataStore; services; pure query; console.] |
+| Design trade-off | [In-memory dictionaries keep the design simple and testable but give up persistence (FR-10 retired).] |
+| Meaningful test and its limits / 100 percent coverage | [test_stage7_cancelled_slot_can_be_rebooked_with_history_retained checks history and the conflict rule. Full coverage would still not prove that requirements are complete or the UI is correct.] |
+| Diagnosed defect and verification | [F8-01: the store lookup filtered out cancelled appointments; the filter was removed (74e7011); the retained-history test now passes.] |
+| Shared store and session-state/query responsibilities | [The store owns state; services coordinate through it; select_appointments only reads and returns a new list.] |
+| What would break if session-state lookup/query responsibilities changed? | [If lookup filtered by status again, FR-07 and the cancellation tests would fail. If the query mutated or sorted the store, ordering and history guarantees would break.] |
+| Why cancellation is domain behaviour / conflict coordination is service behaviour | [Cancellation changes one appointment's own state under its own rule. Conflicts need knowledge of other appointments, so the service checks them through the store.] |
+| FR-07 retained history test | [test_cancelled_appointment_is_retained_in_history (test_services.py:143).] |
+| Actual AI change rejected/modified or honestly accepted with verification | [Stage 10 Copilot commit e36ee41 rejected and reverted (82d81e5).] |
+| Unresolved limitation / future production work | [Persistence, authentication and a time-zone policy; console rescheduling.] |
+| Personal implementation contribution | [Each member shall independently complete this ( Shaban Mohseni: Contributed on Stage 8  1/4Partialy AID and Stage 12 finalisment).] |
+| Personal test/review/design/integration contribution | [Each member shall independently complete this ( Shaban Mohseni:  Contributed on Stage 81/4Partialy AID and Stage 12 finalisment ] |
 | PG agentic change and rescheduling verification | [response] |
 | PG responsible-AI risk/remediation or supported no finding | [response] |
 
 Optional bounded-change practice only: validation rule, focused test, safe error-message change, explicit-input query or agreed status rule with test. Explain expected impact before editing, make a small change, run the test, and identify evidence to inspect if unsure. No live AI unless explicitly permitted. Preserve the submitted candidate.
 
-Practice question/change and reasoning: [response or not undertaken]
+Practice question/change and reasoning: [not undertaken]
 Separate reflection / peer / common team viva evidence links and routing: [response]
 No further coding stage. Later corrections use the published assessment process.
