@@ -178,5 +178,8 @@ def run_menu() -> None:
                         print(format_appointment(appointment))
             else:
                 print('Error: invalid choice')
+        except EOFError:
+             print('Input closed; exiting.')
+             return
         except (ValueError, LookupError) as error:
             print(f'Error: {error}')
