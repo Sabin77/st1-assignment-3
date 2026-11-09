@@ -42,12 +42,12 @@ Tutorial activity 2 and actual readiness matrix. Add exact requirement/acceptanc
 
 | Suite/scope | Environment/version | Working directory and command | Tested SHA | Actual result | Evidence link |
 |---|---|---|---|---|---|
-| Complete common | [response] | [response] | [response] | [response] | [response] |
-| Complete PG if applicable | [response] | [response] | [response] | [response] | [response] |
-| Affected focused checks after correction | [response] | [response] | [response] | [response] | [response] |
-| Full integrated recheck | [response] | [response] | [response] | [response] | [response] |
-Prior assertions preserved / reviewed test diff: [response]
-Remaining failure / limitation: [response]
+| Complete common | [As above] | [project/, python -m pytest -q] | [46209c7] | [52 passed in 0.07s] | [Re-run in this stage] |
+| Complete PG if applicable | [As above] | [project/, python -m pytest -q] | [87f1f87 (before corrections)] | [71 passed in 0.10s; with unmerged test_assurance.py added: 73 passed] | [Re-run in this stage] |
+| Affected focused checks after correction | [As above] | [project/, python -m pytest -q tests/test_services.py tests/test_rescheduling.py] | [842de68] | [46 passed in 0.02s] | [Release correction commit] |
+| Full integrated recheck | [As above] | [project/, python -m pytest -q] | [842de68] | [71 passed in 0.03s] | [Release correction commit] |
+Prior assertions preserved / reviewed test diff: [no test file was changed (git diff 87f1f87 842de68 -- project/tests is empty). Common tests run independently on the RC (test_domain.py test_services.py test_starter.py): 52 passed; rescheduling only: 19 passed.]
+Remaining failure / limitation: [no failing tests. The console menu is checked by a scripted run only, and the Python 3.13 run has not been confirmed in this stage.]
 
 
 ## D Console and end to end demonstration
